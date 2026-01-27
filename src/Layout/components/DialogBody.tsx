@@ -119,6 +119,7 @@ function DialogBody(props: Props) {
             padding={`0 ${excessWidth}px`}
             position="relative"
             shrink
+            style={{ zIndex: 1 }}
           >
             {props.children}
             {actionsPosition === "after-content" ? actionsContent : null}

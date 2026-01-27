@@ -1,8 +1,16 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
+import Divider from "@mui/material/Divider"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import IconButton from "@mui/material/IconButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
 import { makeStyles } from "~Generic/lib/makeStyles"
+import AddIcon from "@mui/icons-material/Add"
+import InfoIcon from "@mui/icons-material/Info"
+import MenuIcon from "@mui/icons-material/Menu"
 import SettingsIcon from "@mui/icons-material/Settings"
 import Switch from "@mui/material/Switch"
 import Tooltip from "@mui/material/Tooltip"
@@ -21,6 +29,7 @@ import { SettingsContext } from "../contexts/settings"
 import * as routes from "../routes"
 import AccountList from "./AccountList"
 import TermsAndConditions from "./TermsAndConditionsDialog"
+import pkg from "../../../package.json"
 
 const useStyles = makeStyles({
   "@keyframes glowing": {
@@ -31,6 +40,19 @@ const useStyles = makeStyles({
 
   icon: {
     animation: "$glowing 5000ms infinite"
+  },
+  menuIcon: {
+    flex: "0 0 24px",
+    minWidth: 24,
+    marginRight: 16
+  },
+  menuItem: {
+    minWidth: 200
+  },
+  versionText: {
+    opacity: 0.6,
+    fontSize: "0.85em",
+    padding: "8px 16px"
   }
 })
 
@@ -41,10 +63,25 @@ function AllAccountsPage() {
   const { showNotification } = React.useContext(NotificationsContext)
   const testnetAccounts = React.useMemo(() => accounts.filter(account => account.testnet), [accounts])
   const [isUpdateInProgress, setUpdateInProgress] = React.useState(false)
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null)
   const { t } = useTranslation()
 
   const styles = useStyles()
   const isWidthMax450 = useMediaQuery("(max-width:450px)")
+  const isMenuOpen = Boolean(menuAnchorEl)
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null)
+  }
+
+  const handleMenuItemClick = (action: () => void) => {
+    handleMenuClose()
+    action()
+  }
 
   const updater = getUpdater()
 
@@ -103,23 +140,77 @@ function AllAccountsPage() {
               ? updateButton
               : null}
             <IconButton
-              onClick={() => router.history.push(routes.settings())}
+              onClick={handleMenuOpen}
               style={{ marginLeft: isWidthMax450 ? 0 : 8, marginRight: -12, color: "inherit" }}
+              aria-label="menu"
+              aria-controls="main-menu"
+              aria-haspopup="true"
             >
-              <SettingsIcon />
+              <MenuIcon />
             </IconButton>
+            <Menu
+              id="main-menu"
+              anchorEl={menuAnchorEl}
+              open={isMenuOpen}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right"
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right"
+              }}
+            >
+              <MenuItem
+                className={styles.menuItem}
+                onClick={() =>
+                  handleMenuItemClick(() => router.history.push(routes.newAccount(networkSwitch === "testnet")))
+                }
+              >
+                <ListItemIcon className={styles.menuIcon}>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText>{t("app.all-accounts.menu.create-account")}</ListItemText>
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                className={styles.menuItem}
+                onClick={() => handleMenuItemClick(() => router.history.push(routes.settings()))}
+              >
+                <ListItemIcon className={styles.menuIcon}>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText>{t("app.all-accounts.menu.settings")}</ListItemText>
+              </MenuItem>
+              <MenuItem className={styles.menuItem} disabled>
+                <ListItemIcon className={styles.menuIcon}>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText>{t("app.all-accounts.menu.about")}</ListItemText>
+              </MenuItem>
+              <Divider />
+              <div className={styles.versionText}>v{pkg.version}</div>
+            </Menu>
           </Box>
         }
       />
     ),
     [
+      handleMenuClose,
+      handleMenuOpen,
+      isMenuOpen,
       isUpdateInProgress,
       isWidthMax450,
+      menuAnchorEl,
       networkSwitch,
       networkSwitchButton,
       router.history,
       settings.showTestnet,
       settings.updateAvailable,
+      styles.menuIcon,
+      styles.menuItem,
+      styles.versionText,
       testnetAccounts.length,
       updater,
       updateButton,

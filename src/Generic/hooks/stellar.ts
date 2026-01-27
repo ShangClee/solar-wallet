@@ -29,10 +29,8 @@ export function useHorizon(testnet: boolean = false) {
 export function useHorizonURLs(testnet: boolean = false) {
   const stellar = React.useContext(StellarContext)
 
-  if (stellar.isSelectionPending) {
-    throw stellar.pendingSelection
-  }
-
+  // Return current URLs immediately - don't suspend while selection is pending.
+  // The selection is an optimization to find the fastest server; fallback URLs work fine.
   const horizonURLs = testnet ? stellar.testnetHorizonURLs : stellar.pubnetHorizonURLs
   return horizonURLs
 }

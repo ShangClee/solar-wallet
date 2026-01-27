@@ -38,7 +38,7 @@ const initialValues: ContextType = {
   isSelectionPending: true,
   pendingSelection: initialHorizonSelection,
   pubnetHorizonURLs: ["https://horizon.stellar.org"],
-  testnetHorizonURLs: ["https://stellar-horizon-testnet.satoshipay.io/"]
+  testnetHorizonURLs: ["https://horizon-testnet.stellar.org"]
 }
 
 const StellarContext = React.createContext<ContextType>(initialValues)

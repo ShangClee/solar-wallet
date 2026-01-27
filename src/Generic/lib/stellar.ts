@@ -15,7 +15,7 @@ interface OfferAsset {
   asset_code?: string
   asset_issuer?: string
 }
-import { AssetRecord } from "../hooks/stellar-ecosystem"
+import { AssetRecord } from "./stellar-ticker"
 import { AccountData, BalanceLine } from "./account"
 
 const MAX_INT64 = "9223372036854775807"

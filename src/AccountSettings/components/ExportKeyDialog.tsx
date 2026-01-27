@@ -18,6 +18,7 @@ import { Box } from "~Layout/components/Box"
 import DialogBody from "~Layout/components/DialogBody"
 
 interface PromptToRevealProps {
+  background?: React.ReactNode
   children: React.ReactNode
   password: string
   passwordError: Error | null
@@ -33,7 +34,7 @@ function PromptToReveal(props: PromptToRevealProps) {
 
   return (
     <DialogBody
-      background={<WarnIcon style={{ fontSize: 220 }} />}
+      background={props.background ?? <WarnIcon style={{ fontSize: 220 }} />}
       noMaxWidth
       preventNotchSpacing
       top={props.title}
@@ -207,6 +208,7 @@ function ExportKeyDialog(props: Props) {
     <ShowSecretKey export={secretKey} onConfirm={props.onConfirm} title={titleContent} variant={props.variant} />
   ) : (
     <PromptToReveal
+      background={props.variant === "initial-backup" ? <WarnIcon style={{ fontSize: 96 }} /> : undefined}
       onReveal={reveal}
       password={password}
       passwordError={passwordError ? new Error(getErrorTranslation(passwordError, t)) : null}

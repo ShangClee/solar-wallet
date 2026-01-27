@@ -5,8 +5,6 @@ import { fetchAllAssets, AssetRecord } from "../lib/stellar-ticker"
 import { tickerAssetsCache, wellKnownAccountsCache } from "./_caches"
 import { useForceRerender } from "./util"
 
-export type { AccountRecord, AssetRecord }
-
 export function useTickerAssets(testnet: boolean) {
   const fetchAssets = () => fetchAllAssets(testnet)
   return tickerAssetsCache.get(testnet) || tickerAssetsCache.suspend(testnet, fetchAssets)

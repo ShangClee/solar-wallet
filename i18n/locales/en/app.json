@@ -24,6 +24,11 @@
     "title": {
       "testnet": "Testnet Accounts",
       "mainnet": "My Accounts"
+    },
+    "menu": {
+      "create-account": "Create Account",
+      "settings": "Settings",
+      "about": "About"
     }
   },
   "notification": {

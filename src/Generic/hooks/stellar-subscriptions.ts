@@ -73,6 +73,18 @@ function applyAccountDataUpdate(prev: AccountData, next: AccountData): AccountDa
   return next
 }
 
+// Timeout for individual data fetches (30 seconds)
+const DATA_FETCH_TIMEOUT_MS = 30000
+
+function withDataFetchTimeout<T>(promise: Promise<T>, accountID: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Timeout fetching data for account ${accountID}`)), DATA_FETCH_TIMEOUT_MS)
+    )
+  ])
+}
+
 export function useLiveAccountDataSet(accountIDs: string[], testnet: boolean): AccountData[] {
   const horizonURLs = useHorizonURLs(testnet)
   const netWorker = useNetWorker()
@@ -97,7 +109,9 @@ export function useLiveAccountDataSet(accountIDs: string[], testnet: boolean): A
           get() {
             return (
               accountDataCache.get(selector) ||
-              accountDataCache.suspend(selector, () => netWorker.fetchAccountData(horizonURLs, accountID).then(prepare))
+              accountDataCache.suspend(selector, () =>
+                withDataFetchTimeout(netWorker.fetchAccountData(horizonURLs, accountID), accountID).then(prepare)
+              )
             )
           },
           set(updated: AccountData) {
@@ -292,12 +306,13 @@ export function useLiveRecentTransactions(accountID: string, testnet: boolean): 
         return (
           accountTransactionsCache.get(selector) ||
           accountTransactionsCache.suspend(selector, async () => {
-            const page = await netWorker.fetchAccountTransactions(horizonURLs, accountID, {
+            const fetchPromise = netWorker.fetchAccountTransactions(horizonURLs, accountID, {
               emptyOn404: true,
               limit,
               order: "desc"
             })
 
+            const page = await withDataFetchTimeout(fetchPromise, accountID)
             const transactions = page._embedded.records
             return {
               // not an accurate science right now…
