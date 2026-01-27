@@ -4,10 +4,19 @@ import { createRoot } from "react-dom/client"
 import { HashRouter as Router } from "react-router-dom"
 import { ThemeProvider } from "@mui/material/styles"
 import ViewLoading from "~Generic/components/ViewLoading"
+import { appIsLoaded } from "~SplashScreen/splash-screen"
 import { ContextProviders } from "./context"
 import theme from "../theme"
 
 const Stage2 = React.lazy(() => import("./app-stage2"))
+
+/** Hides splash and shows loading spinner. Ensures we never reveal a blank #app. */
+function FallbackWithSplashHide() {
+  React.useEffect(() => {
+    appIsLoaded()
+  }, [])
+  return <ViewLoading />
+}
 
 export const Providers = (props: { children: React.ReactNode }) => (
   <Router>
@@ -19,7 +28,7 @@ export const Providers = (props: { children: React.ReactNode }) => (
 
 const App = () => (
   <Providers>
-    <React.Suspense fallback={<ViewLoading />}>
+    <React.Suspense fallback={<FallbackWithSplashHide />}>
       <Stage2 />
     </React.Suspense>
   </Providers>

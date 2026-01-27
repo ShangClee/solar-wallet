@@ -1,8 +1,9 @@
 import React from "react"
-import { Route, Routes, useParams } from "react-router-dom"
+import { Navigate, Route, Routes, useParams } from "react-router-dom"
 import AccountPage from "~Account/components/AccountView"
 import SettingsPage from "~AppSettings/components/AppSettingsView"
 import { MainErrorBoundary } from "~Generic/components/ErrorBoundaries"
+import ViewLoading from "~Generic/components/ViewLoading"
 import { VerticalLayout } from "~Layout/components/Box"
 import { appIsLoaded } from "~SplashScreen/splash-screen"
 import ConnectionErrorListener from "~Toasts/components/ConnectionErrorListener"
@@ -40,45 +41,48 @@ function Stage2() {
   return (
     <>
       <VerticalLayout height="100%" style={{ WebkitOverflowScrolling: "touch" }}>
-        <VerticalLayout height="100%" grow overflowY="hidden">
+        <VerticalLayout height="100%" grow overflowY="hidden" style={{ minHeight: "50vh" }}>
           <MainErrorBoundary>
-            <Routes>
-              <Route path="/" element={<AllAccountsPage />} />
+            <React.Suspense fallback={<ViewLoading style={{ minHeight: "50vh" }} />}>
+              <Routes>
+                <Route path="/" element={<AllAccountsPage />} />
+                <Route path="" element={<Navigate to="/" replace />} />
 
-              {[
-                "/account/create/mainnet",
-                "/account/import/mainnet",
-                "/account/join/mainnet",
-                "/account/new/mainnet"
-              ].map(path => (
-                <Route key={path} path={path} element={<CreateMainnetAccount />} />
-              ))}
+                {[
+                  "/account/create/mainnet",
+                  "/account/import/mainnet",
+                  "/account/join/mainnet",
+                  "/account/new/mainnet"
+                ].map(path => (
+                  <Route key={path} path={path} element={<CreateMainnetAccount />} />
+                ))}
 
-              {[
-                "/account/create/testnet",
-                "/account/import/testnet",
-                "/account/join/testnet",
-                "/account/new/testnet"
-              ].map(path => (
-                <Route key={path} path={path} element={<CreateTestnetAccount />} />
-              ))}
+                {[
+                  "/account/create/testnet",
+                  "/account/import/testnet",
+                  "/account/join/testnet",
+                  "/account/new/testnet"
+                ].map(path => (
+                  <Route key={path} path={path} element={<CreateTestnetAccount />} />
+                ))}
 
-              {["/account/:id/:action/:subaction", "/account/:id/:action", "/account/:id"].map(path => (
-                <Route key={path} path={path} element={<AccountPageWrapper />} />
-              ))}
+                {["/account/:id/:action/:subaction", "/account/:id/:action", "/account/:id"].map(path => (
+                  <Route key={path} path={path} element={<AccountPageWrapper />} />
+                ))}
 
-              {["/settings/:action", "/settings"].map(path => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <React.Suspense fallback={null}>
-                      <SettingsPage />
-                    </React.Suspense>
-                  }
-                />
-              ))}
-            </Routes>
+                {["/settings/:action", "/settings"].map(path => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      <React.Suspense fallback={null}>
+                        <SettingsPage />
+                      </React.Suspense>
+                    }
+                  />
+                ))}
+              </Routes>
+            </React.Suspense>
           </MainErrorBoundary>
         </VerticalLayout>
       </VerticalLayout>
