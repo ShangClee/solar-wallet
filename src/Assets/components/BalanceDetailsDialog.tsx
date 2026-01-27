@@ -1,11 +1,11 @@
 import BigNumber from "big.js"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, Horizon, ServerApi } from "stellar-sdk"
-import Dialog from "@material-ui/core/Dialog"
-import Divider from "@material-ui/core/Divider"
-import List from "@material-ui/core/List"
-import AddIcon from "@material-ui/icons/Add"
+import { Asset, Horizon } from "stellar-sdk"
+import Dialog from "@mui/material/Dialog"
+import Divider from "@mui/material/Divider"
+import List from "@mui/material/List"
+import AddIcon from "@mui/icons-material/Add"
 import { Account } from "~App/contexts/accounts"
 import * as routes from "~App/routes"
 import { FullscreenDialogTransition } from "~App/theme"
@@ -37,7 +37,7 @@ interface TrustedAssetsProps {
   hmargin: string | number
   hpadding: string | number
   onOpenAssetDetails: (asset: Asset) => void
-  openOffers: ServerApi.OfferRecord[]
+  openOffers: Horizon.ServerApi.OfferRecord[]
   olderOffersAvailable?: boolean
 }
 
@@ -75,7 +75,7 @@ const TrustedAssets = React.memo(function TrustedAssets(props: TrustedAssetsProp
 interface NativeBalanceItemsProps {
   account: Account
   accountData: AccountData
-  balance: Horizon.BalanceLineNative
+  balance: Horizon.HorizonApi.BalanceLineNative
   hmargin: string | number
   hpadding: string | number
   onOpenAssetDetails: (asset: Asset) => void
@@ -153,11 +153,11 @@ function BalanceDetailsDialog(props: BalanceDetailsProps) {
     router.history.push(routes.assetDetails(props.account.id, stringifyAsset(asset)))
 
   const trustedAssets = sortBalances(accountData.balances)
-    .filter((balance): balance is Horizon.BalanceLineAsset => balance.asset_type !== "native")
+    .filter((balance): balance is Horizon.HorizonApi.BalanceLineAsset => balance.asset_type !== "native")
     .map(balance => new Asset(balance.asset_code, balance.asset_issuer))
 
   const nativeBalance = accountData.balances.find(
-    (balance): balance is Horizon.BalanceLineNative => balance.asset_type === "native"
+    (balance): balance is Horizon.HorizonApi.BalanceLineNative => balance.asset_type === "native"
   )
 
   const hpadding = isSmallScreen ? 0 : 8

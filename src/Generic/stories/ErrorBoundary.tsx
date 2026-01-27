@@ -1,5 +1,5 @@
 import React from "react"
-import Button from "@material-ui/core/Button"
+import Button from "@mui/material/Button"
 import { storiesOf } from "@storybook/react"
 import { MainErrorBoundary } from "../components/ErrorBoundaries"
 import { VerticalLayout } from "~Layout/components/Box"

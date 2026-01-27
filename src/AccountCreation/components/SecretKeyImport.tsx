@@ -1,9 +1,9 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import ListItemText from "@material-ui/core/ListItemText"
-import TextField from "@material-ui/core/TextField"
-import RestoreIcon from "@material-ui/icons/SettingsBackupRestore"
+import InputAdornment from "@mui/material/InputAdornment"
+import ListItemText from "@mui/material/ListItemText"
+import TextField from "@mui/material/TextField"
+import RestoreIcon from "@mui/icons-material/SettingsBackupRestore"
 import AccountSettingsItem from "~AccountSettings/components/AccountSettingsItem"
 import { QRReader } from "~Generic/components/FormFields"
 

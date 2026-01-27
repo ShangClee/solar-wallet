@@ -39,17 +39,17 @@ export function createMainWindow() {
 
   window.removeMenu()
 
-  const pathname = isDev
-    ? path.join(__dirname, "../../dist/index.dev.html")
-    : path.join(__dirname, "../../dist/index.prod.html")
-
-  const webappURL = URL.format({
-    pathname,
-    protocol: "file:",
-    slashes: true
-  })
-
-  window.loadURL(webappURL)
+  if (isDev) {
+    window.loadURL("http://localhost:3000")
+  } else {
+    const pathname = path.join(__dirname, "../../dist/index.html")
+    const webappURL = URL.format({
+      pathname,
+      protocol: "file:",
+      slashes: true
+    })
+    window.loadURL(webappURL)
+  }
 
   window.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
     if (!webContents.getURL().startsWith("file://") && (permission === "media" || permission === "openExternal")) {

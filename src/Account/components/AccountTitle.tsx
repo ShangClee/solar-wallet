@@ -1,15 +1,15 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import IconButton from "@material-ui/core/IconButton"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import TextField, { TextFieldProps } from "@material-ui/core/TextField"
-import Tooltip from "@material-ui/core/Tooltip"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import CheckIcon from "@material-ui/icons/Check"
-import ClearIcon from "@material-ui/icons/Clear"
-import EditIcon from "@material-ui/icons/Edit"
-import GroupIcon from "@material-ui/icons/Group"
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
+import TextField, { TextFieldProps } from "@mui/material/TextField"
+import Tooltip from "@mui/material/Tooltip"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import CheckIcon from "@mui/icons-material/Check"
+import ClearIcon from "@mui/icons-material/Clear"
+import EditIcon from "@mui/icons-material/Edit"
+import GroupIcon from "@mui/icons-material/Group"
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser"
 import { Account } from "~App/contexts/accounts"
 import { useLiveAccountData } from "~Generic/hooks/stellar-subscriptions"
 import { useIsMobile, useRouter } from "~Generic/hooks/userinterface"
@@ -212,11 +212,9 @@ function AccountTitle(props: AccountTitleProps) {
   const inputRef = React.useRef<HTMLInputElement | null>(null)
 
   React.useEffect(() => {
-    return router.history.listen(() => {
-      setMode("readonly")
-      clearTextSelection()
-    })
-  }, [router.history])
+    setMode("readonly")
+    clearTextSelection()
+  }, [router.location])
 
   const handleNameEditing = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

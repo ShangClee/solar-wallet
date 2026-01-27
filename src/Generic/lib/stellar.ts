@@ -1,17 +1,20 @@
 import BigNumber from "big.js"
 import fetch from "isomorphic-fetch"
 import {
-  xdr,
   Asset,
   Horizon,
   Keypair,
-  NotFoundError,
-  Server,
-  Transaction,
   LiquidityPoolAsset,
-  getLiquidityPoolId
+  NotFoundError,
+  Transaction,
+  getLiquidityPoolId,
+  xdr
 } from "stellar-sdk"
-import { OfferAsset } from "stellar-sdk/lib/types/offer"
+interface OfferAsset {
+  asset_type: string
+  asset_code?: string
+  asset_issuer?: string
+}
 import { AssetRecord } from "../hooks/stellar-ecosystem"
 import { AccountData, BalanceLine } from "./account"
 
@@ -118,7 +121,10 @@ export function getAssetsFromBalances(balances: BalanceLine[]) {
   return balances.map(balance =>
     balance.asset_type === "native"
       ? Asset.native()
-      : new Asset((balance as Horizon.BalanceLineAsset).asset_code, (balance as Horizon.BalanceLineAsset).asset_issuer)
+      : new Asset(
+          (balance as Horizon.HorizonApi.BalanceLineAsset).asset_code,
+          (balance as Horizon.HorizonApi.BalanceLineAsset).asset_issuer
+        )
   )
 }
 
@@ -126,7 +132,7 @@ export function findMatchingBalanceLine(balances: AccountData["balances"], asset
   return balances.find((balance): balance is BalanceLine => balancelineToAsset(balance).equals(asset))
 }
 
-export function getHorizonURL(horizon: Server) {
+export function getHorizonURL(horizon: Horizon.Server) {
   return horizon.serverURL.toString()
 }
 

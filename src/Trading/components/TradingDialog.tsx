@@ -1,8 +1,8 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, Horizon, Server, Transaction } from "stellar-sdk"
-import Box from "@material-ui/core/Box"
-import Typography from "@material-ui/core/Typography"
+import { Asset, Horizon, Transaction } from "stellar-sdk"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import { Account } from "~App/contexts/accounts"
 import * as routes from "~App/routes"
 import { ActionButton, DialogActionsBox } from "~Generic/components/DialogActions"
@@ -25,7 +25,7 @@ import TradingForm from "./TradingForm"
 
 interface TradingDialogProps {
   account: Account
-  horizon: Server
+  horizon: Horizon.Server
   onClose: () => void
   sendTransaction: (transaction: Transaction) => void
 }
@@ -54,7 +54,9 @@ function TradingDialog(props: TradingDialogProps) {
 
   const trustlines = React.useMemo(
     () =>
-      accountData.balances.filter((balance): balance is Horizon.BalanceLineAsset => balance.asset_type !== "native"),
+      accountData.balances.filter(
+        (balance): balance is Horizon.HorizonApi.BalanceLineAsset => balance.asset_type !== "native"
+      ),
     [accountData.balances]
   )
 

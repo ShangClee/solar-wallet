@@ -1,15 +1,15 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Avatar from "@material-ui/core/Avatar"
-import CloudIcon from "@material-ui/icons/Cloud"
-import RemoveIcon from "@material-ui/icons/RemoveCircle"
-import IconButton from "@material-ui/core/IconButton"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import Typography from "@material-ui/core/Typography"
-import { makeStyles } from "@material-ui/core/styles"
+import Avatar from "@mui/material/Avatar"
+import CloudIcon from "@mui/icons-material/Cloud"
+import RemoveIcon from "@mui/icons-material/RemoveCircle"
+import IconButton from "@mui/material/IconButton"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import Typography from "@mui/material/Typography"
+import { makeStyles } from "~Generic/lib/makeStyles"
 import { SettingsContext } from "~App/contexts/settings"
 import { useStellarToml } from "~Generic/hooks/stellar"
 import { ActionButton, ConfirmDialog } from "~Generic/components/DialogActions"
@@ -53,9 +53,9 @@ const TrustedServiceListItem = React.memo(function TrustedServiceListItem(props:
     <ListItem className={classes.listItem}>
       <ListItemIcon style={{ marginRight: 0 }}>
         {imageURL ? (
-          <Avatar alt={name} className={classes.logoAvatar} src={imageURL} />
+          <Avatar alt={orgName || props.trustedService.domain} className={classes.logoAvatar} src={imageURL} />
         ) : (
-          <Avatar alt={name} className={classes.cloudAvatar}>
+          <Avatar alt={orgName || props.trustedService.domain} className={classes.cloudAvatar}>
             <CloudIcon />
           </Avatar>
         )}

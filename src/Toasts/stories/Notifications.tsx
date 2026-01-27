@@ -1,5 +1,5 @@
 import React from "react"
-import Button from "@material-ui/core/Button"
+import Button from "@mui/material/Button"
 import { storiesOf } from "@storybook/react"
 import NotificationContainer from "../components/NotificationContainer"
 import { NotificationsContext, NotificationsProvider } from "~App/contexts/notifications"

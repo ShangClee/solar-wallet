@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, Server, Transaction } from "stellar-sdk"
+import { Asset, Horizon, Transaction } from "stellar-sdk"
 import { Account } from "~App/contexts/accounts"
 import { trackError } from "~App/contexts/notifications"
 import { useLiveAccountData, useLiveAccountOffers } from "~Generic/hooks/stellar-subscriptions"
@@ -18,7 +18,7 @@ import PaymentForm from "./PaymentForm"
 interface Props {
   account: Account
   accountData: AccountData
-  horizon: Server
+  horizon: Horizon.Server
   onClose: () => void
   openOrdersCount: number
   sendTransaction: (transaction: Transaction) => Promise<any>
@@ -31,7 +31,7 @@ function PaymentDialog(props: Props) {
   const [txCreationPending, setTxCreationPending] = React.useState(false)
 
   const handleSubmit = React.useCallback(
-    async (createTx: (horizon: Server, account: Account) => Promise<Transaction>) => {
+    async (createTx: (horizon: Horizon.Server, account: Account) => Promise<Transaction>) => {
       try {
         setTxCreationPending(true)
         const tx = await createTx(props.horizon, props.account)

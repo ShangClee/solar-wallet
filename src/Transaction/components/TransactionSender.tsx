@@ -1,8 +1,8 @@
 import { TFunction } from "i18next"
 import React from "react"
 import { Translation } from "react-i18next"
-import { Networks, Server, Transaction } from "stellar-sdk"
-import Zoom from "@material-ui/core/Zoom"
+import { Horizon, Networks, Transaction } from "stellar-sdk"
+import Zoom from "@mui/material/Zoom"
 import { Account } from "~App/contexts/accounts"
 import { SettingsContext, SettingsContextType } from "~App/contexts/settings"
 import { useHorizon } from "~Generic/hooks/stellar"
@@ -77,7 +77,7 @@ export type SendTransaction = (
 ) => Promise<any>
 
 interface RenderFunctionProps {
-  horizon: Server
+  horizon: Horizon.Server
   sendTransaction: SendTransaction
 }
 
@@ -85,7 +85,7 @@ interface Props {
   account: Account
   completionCallbackDelay?: number
   forceClose?: boolean
-  horizon: Server
+  horizon: Horizon.Server
   settings: SettingsContextType
   t: TFunction
   children: (props: RenderFunctionProps) => React.ReactNode

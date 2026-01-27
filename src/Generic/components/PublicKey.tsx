@@ -1,6 +1,6 @@
 import React from "react"
-import ButtonBase from "@material-ui/core/ButtonBase"
-import Typography from "@material-ui/core/Typography"
+import ButtonBase from "@mui/material/ButtonBase"
+import Typography from "@mui/material/Typography"
 import { AccountsContext } from "~App/contexts/accounts"
 import { useFederationLookup } from "../hooks/stellar"
 import { useClipboard } from "../hooks/userinterface"

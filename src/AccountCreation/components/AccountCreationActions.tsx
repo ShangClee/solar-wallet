@@ -5,8 +5,8 @@
 
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { makeStyles } from "@material-ui/core/styles"
-import CheckIcon from "@material-ui/icons/Check"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import CheckIcon from "@mui/icons-material/Check"
 import { useRouter } from "~Generic/hooks/userinterface"
 import { matchesRoute } from "~Generic/lib/routes"
 import * as routes from "~App/routes"

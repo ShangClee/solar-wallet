@@ -1,15 +1,16 @@
 // Global IPC.* types are defined in types/ipc.d.ts
+import * as ElectronImpl from "./ipc/electron"
+import * as CordovaImpl from "./ipc/cordova"
+import * as WebImpl from "./ipc/web"
 
 function getImplementation() {
   if (window.electron) {
-    const impl = require("./ipc/electron")
-    return impl
+    return ElectronImpl
   } else if (process.env.PLATFORM === "android" || process.env.PLATFORM === "ios") {
-    const impl = require("./ipc/cordova")
-    return impl
-  } else if (process.browser) {
-    const impl = require("./ipc/web")
-    return impl
+    return CordovaImpl
+  } else if (process.browser || true) {
+    // Fallback to web if nothing else matches
+    return WebImpl
   } else {
     throw new Error("There is no IPC implementation for your platform.")
   }

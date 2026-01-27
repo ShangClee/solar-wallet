@@ -4,7 +4,7 @@ function setDisplayName(Component: React.ComponentType<any>, name: string) {
   ;(Component as any).displayName = name
 }
 
-function withFallback<Props>(
+function withFallback<Props extends object>(
   Component: React.ComponentType<Props>,
   fallback: React.ReactNode
 ): React.ComponentType<Props> {

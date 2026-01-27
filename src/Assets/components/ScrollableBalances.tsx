@@ -2,10 +2,10 @@ import React from "react"
 import { animated, useSpring } from "react-spring"
 import { useDrag } from "react-use-gesture"
 import { Asset, Horizon } from "stellar-sdk"
-import IconButton from "@material-ui/core/IconButton"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import LeftIcon from "@material-ui/icons/ArrowLeft"
-import RightIcon from "@material-ui/icons/ArrowRight"
+import IconButton from "@mui/material/IconButton"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import LeftIcon from "@mui/icons-material/ArrowLeft"
+import RightIcon from "@mui/icons-material/ArrowRight"
 import { Account } from "~App/contexts/accounts"
 import { useLiveAccountData } from "~Generic/hooks/stellar-subscriptions"
 import { stringifyAsset } from "~Generic/lib/stellar"
@@ -128,8 +128,8 @@ function ScrollableBalances(props: ScrollableBalancesProps) {
   const [currentStep, setCurrentStep] = React.useState(0)
   const [spring, setSpring] = useSpring(() => ({ x: 0 }))
 
-  const nativeBalance: Horizon.BalanceLineNative = accountData.balances.find(
-    (balance): balance is Horizon.BalanceLineNative => balance.asset_type === "native"
+  const nativeBalance: Horizon.HorizonApi.BalanceLineNative = accountData.balances.find(
+    (balance): balance is Horizon.HorizonApi.BalanceLineNative => balance.asset_type === "native"
   ) || {
     asset_type: "native",
     balance: "0",
@@ -140,7 +140,7 @@ function ScrollableBalances(props: ScrollableBalancesProps) {
   const isAccountActivated = Number.parseFloat(nativeBalance.balance) > 0
 
   const trustedAssets = sortBalances(accountData.balances)
-    .filter((balance): balance is Horizon.BalanceLineAsset => balance.asset_type !== "native")
+    .filter((balance): balance is Horizon.HorizonApi.BalanceLineAsset => balance.asset_type !== "native")
     .map(balance => new Asset(balance.asset_code, balance.asset_issuer))
 
   const balancesPerStep = Math.max(Math.floor((window.innerWidth - 32 - 32) / getBalanceItemMinMaxWidth()[1]), 2)

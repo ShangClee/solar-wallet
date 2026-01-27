@@ -1,7 +1,7 @@
 import autoReload from "electron-reload"
 import path from "path"
 
-const watch = path.join(__dirname, "..", "..", "dist", "*")
+const watch = path.join(__dirname, "..", "lib")
 
 autoReload(watch, {
   electron: path.join(__dirname, "..", "..", "node_modules", ".bin", "electron")

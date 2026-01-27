@@ -1,9 +1,9 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, Server, Transaction } from "stellar-sdk"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
-import TextField from "@material-ui/core/TextField"
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser"
+import { Asset, Horizon, Transaction } from "stellar-sdk"
+import useMediaQuery from "@mui/material/useMediaQuery"
+import TextField from "@mui/material/TextField"
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser"
 import { Account } from "~App/contexts/accounts"
 import { AccountData } from "~Generic/lib/account"
 import DialogBody from "~Layout/components/DialogBody"
@@ -14,7 +14,7 @@ interface Props {
   account: Account
   accountData: AccountData
   createAddAssetTransaction: (asset: Asset, options: { limit?: string }) => any
-  horizon: Server
+  horizon: Horizon.Server
   onClose: () => void
   sendTransaction: (createTransactionToSend: () => Promise<Transaction>) => any
   txCreationPending: boolean

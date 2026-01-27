@@ -1,18 +1,18 @@
 import BigNumber from "big.js"
 import React from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { Operation, Server, ServerApi, Transaction } from "stellar-sdk"
-import ExpansionPanel from "@material-ui/core/ExpansionPanel"
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails"
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import ListSubheader from "@material-ui/core/ListSubheader"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import ArrowRightIcon from "@material-ui/icons/ArrowRightAlt"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
-import BarChartIcon from "@material-ui/icons/BarChart"
+import { Horizon, Operation, Transaction } from "stellar-sdk"
+import Accordion from "@mui/material/Accordion"
+import AccordionDetails from "@mui/material/AccordionDetails"
+import AccordionSummary from "@mui/material/AccordionSummary"
+import ListItem from "@mui/material/ListItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import ListSubheader from "@mui/material/ListSubheader"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import ArrowRightIcon from "@mui/icons-material/ArrowRightAlt"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import BarChartIcon from "@mui/icons-material/BarChart"
 import { Account } from "~App/contexts/accounts"
 import { breakpoints } from "~App/theme"
 import { trackError } from "~App/contexts/notifications"
@@ -30,10 +30,10 @@ import TransactionSender from "~Transaction/components/TransactionSender"
 import { SingleBalance } from "./AccountBalances"
 
 function createDismissalTransaction(
-  horizon: Server,
+  horizon: Horizon.Server,
   account: Account,
   accountData: AccountData,
-  offer: ServerApi.OfferRecord
+  offer: Horizon.ServerApi.OfferRecord
 ): Promise<Transaction> {
   const buying = offerAssetToAsset(offer.buying)
   const selling = offerAssetToAsset(offer.selling)
@@ -71,7 +71,7 @@ function createDismissalTransaction(
 
 interface OfferListItemProps {
   accountPublicKey: string
-  offer: ServerApi.OfferRecord
+  offer: Horizon.ServerApi.OfferRecord
   onCancel?: () => void
   style?: React.CSSProperties
 }
@@ -230,7 +230,7 @@ function OfferList(props: Props & { sendTransaction: (tx: Transaction) => Promis
     handleMoreTxsFetch
   ])
 
-  const onCancel = async (offer: ServerApi.OfferRecord) => {
+  const onCancel = async (offer: Horizon.ServerApi.OfferRecord) => {
     try {
       const tx = await createDismissalTransaction(horizon, props.account, accountData, offer)
       await props.sendTransaction(tx)
@@ -244,13 +244,13 @@ function OfferList(props: Props & { sendTransaction: (tx: Transaction) => Promis
   } else {
     return (
       <List style={{ background: "transparent" }}>
-        <ExpansionPanel
+        <Accordion
           className={classes.expansionPanel}
           elevation={0}
           expanded={expanded}
           onChange={() => setExpanded(!expanded)}
         >
-          <ExpansionPanelSummary
+          <AccordionSummary
             classes={{ root: classes.expansionPanelSummary, content: classes.expansionPanelSummaryContent }}
             expandIcon={<ExpandMoreIcon />}
           >
@@ -261,8 +261,8 @@ function OfferList(props: Props & { sendTransaction: (tx: Transaction) => Promis
             >
               {props.title}
             </ListSubheader>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+          </AccordionSummary>
+          <AccordionDetails className={classes.expansionPanelDetails}>
             {offerHistory.offers.map(offer => (
               <OfferListItem
                 key={offer.id}
@@ -277,8 +277,8 @@ function OfferList(props: Props & { sendTransaction: (tx: Transaction) => Promis
                 onClick={handleFetchMoreOffers}
               />
             ) : null}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
       </List>
     )
   }

@@ -1,9 +1,9 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Grow from "@material-ui/core/Grow"
-import SnackbarContent from "@material-ui/core/SnackbarContent"
-import { useTheme } from "@material-ui/core/styles"
-import NotificationsIcon from "@material-ui/icons/Notifications"
+import Grow from "@mui/material/Grow"
+import SnackbarContent from "@mui/material/SnackbarContent"
+import { useTheme } from "@mui/material/styles"
+import NotificationsIcon from "@mui/icons-material/Notifications"
 import { NotificationsContext, trackError } from "~App/contexts/notifications"
 import {
   hasPermission as hasPermissionToNotify,

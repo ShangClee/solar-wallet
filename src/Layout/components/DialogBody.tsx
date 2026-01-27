@@ -1,6 +1,6 @@
 import React from "react"
-import CircularProgress from "@material-ui/core/CircularProgress"
-import { makeStyles } from "@material-ui/core/styles"
+import CircularProgress from "@mui/material/CircularProgress"
+import { makeStyles } from "~Generic/lib/makeStyles"
 import { useIsMobile, RefStateObject } from "~Generic/hooks/userinterface"
 import { MobileKeyboardOpenedSelector } from "~App/theme"
 import { MainErrorBoundary } from "~Generic/components/ErrorBoundaries"

@@ -1,8 +1,8 @@
 import React from "react"
-import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import { makeStyles } from "@material-ui/core/styles"
-import ArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import ArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import theme, { primaryBackgroundColor } from "~App/theme"
 
 const useMainSelectionButtonStyles = makeStyles({

@@ -1,8 +1,8 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Card from "@material-ui/core/Card"
-import CardContent from "@material-ui/core/CardContent"
-import Typography from "@material-ui/core/Typography"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Typography from "@mui/material/Typography"
 import * as routes from "~App/routes"
 import AppSettings from "~AppSettings/components/AppSettings"
 import { Box, VerticalLayout } from "~Layout/components/Box"
@@ -11,8 +11,7 @@ import { useIsMobile, useRouter } from "~Generic/hooks/userinterface"
 import { matchesRoute } from "~Generic/lib/routes"
 import { Section } from "~Layout/components/Page"
 
-// tslint:disable-next-line
-const pkg = require("../../../package.json")
+import pkg from "../../../package.json"
 
 function SettingsPage() {
   const isSmallScreen = useIsMobile()

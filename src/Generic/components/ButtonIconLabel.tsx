@@ -1,5 +1,5 @@
 import React from "react"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import CircularProgress from "@mui/material/CircularProgress"
 
 const Container = (props: { children: React.ReactNode; style?: React.CSSProperties }) => {
   return <span style={{ display: "flex", alignItems: "center", height: 24, ...props.style }}>{props.children}</span>

@@ -46,10 +46,10 @@ interface CalculationResults {
   maxPrimaryAmount: BigNumber
   minAccountBalance: BigNumber
   primaryAmount: BigNumber
-  primaryBalance: Horizon.BalanceLine | undefined
+  primaryBalance: Horizon.HorizonApi.BalanceLine | undefined
   relativeSpread: number
   secondaryAmount: BigNumber
-  secondaryBalance: Horizon.BalanceLine | undefined
+  secondaryBalance: Horizon.HorizonApi.BalanceLine | undefined
   spendablePrimaryBalance: BigNumber
   spendableSecondaryBalance: BigNumber
 }

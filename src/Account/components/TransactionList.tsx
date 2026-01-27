@@ -3,19 +3,19 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { Asset, FeeBumpTransaction, Horizon, Networks, Operation, Transaction, TransactionBuilder } from "stellar-sdk"
 import HumanTime from "react-human-time"
-import Collapse from "@material-ui/core/Collapse"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import ListSubheader from "@material-ui/core/ListSubheader"
-import { makeStyles } from "@material-ui/core/styles"
-import AddIcon from "@material-ui/icons/Add"
-import CallMadeIcon from "@material-ui/icons/CallMade"
-import CallReceivedIcon from "@material-ui/icons/CallReceived"
-import RemoveIcon from "@material-ui/icons/Remove"
-import SettingsIcon from "@material-ui/icons/Settings"
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz"
+import Collapse from "@mui/material/Collapse"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import ListSubheader from "@mui/material/ListSubheader"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import AddIcon from "@mui/icons-material/Add"
+import CallMadeIcon from "@mui/icons-material/CallMade"
+import CallReceivedIcon from "@mui/icons-material/CallReceived"
+import RemoveIcon from "@mui/icons-material/Remove"
+import SettingsIcon from "@mui/icons-material/Settings"
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz"
 import { Account } from "~App/contexts/accounts"
 import { SettingsContext } from "~App/contexts/settings"
 import * as routes from "~App/routes"
@@ -494,7 +494,7 @@ interface TransactionListProps {
   onFetchMoreTransactions: () => void
   testnet: boolean
   title: React.ReactNode
-  transactions: Horizon.TransactionResponse[]
+  transactions: Horizon.HorizonApi.TransactionResponse[]
 }
 
 function TransactionList(props: TransactionListProps) {

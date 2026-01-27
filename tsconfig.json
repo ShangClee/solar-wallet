@@ -5,17 +5,20 @@
     "sourceMap": true,
     "strict": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "useUnknownInCatchVariables": false,
     "paths": {
       "~*": ["./src/*"],
       "*": ["shared/types/*"]
     },
     "esModuleInterop": true,
-    "target": "es2017",
-    "lib": ["es6", "dom"],
-    "jsx": "react",
+    "target": "es2020",
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src", "electron", "shared", "vite.config.ts", "src/types"]
 }

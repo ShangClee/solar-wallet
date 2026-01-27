@@ -1,4 +1,4 @@
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import React from "react"
 import { useIsMobile } from "~Generic/hooks/userinterface"
 import { HorizontalLayout, VerticalLayout } from "~Layout/components/Box"

@@ -1,10 +1,10 @@
 import React from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { Asset, Horizon, Operation, Server } from "stellar-sdk"
-import CloseIcon from "@material-ui/icons/Close"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import DialogTitle from "@material-ui/core/DialogTitle"
+import { Asset, Horizon, Operation } from "stellar-sdk"
+import CloseIcon from "@mui/icons-material/Close"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 import { Account } from "~App/contexts/accounts"
 import { trackError } from "~App/contexts/notifications"
 import { AccountData } from "~Generic/lib/account"
@@ -16,7 +16,7 @@ interface Props {
   account: Account
   accountData: AccountData
   asset: Asset
-  horizon: Server
+  horizon: Horizon.Server
   onClose: () => void
   onRemoved: () => void
   sendTransaction: SendTransaction
@@ -45,7 +45,7 @@ const RemoveTrustlineDialog = React.memo(function RemoveTrustlineDialog(props: P
     }
   }
 
-  const assetBalance = (props.accountData.balances as Horizon.BalanceLineAsset[]).find(
+  const assetBalance = (props.accountData.balances as Horizon.HorizonApi.BalanceLineAsset[]).find(
     balance => balance.asset_code === props.asset.getCode() && balance.asset_issuer === props.asset.getIssuer()
   )
   const stillOwnsTokens = assetBalance && parseFloat(assetBalance.balance) > 0

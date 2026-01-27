@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import List from "@material-ui/core/List"
+import List from "@mui/material/List"
 import { availableLanguages } from "../../../i18n/index"
 import { AccountsContext } from "~App/contexts/accounts"
 import { SettingsContext } from "~App/contexts/settings"

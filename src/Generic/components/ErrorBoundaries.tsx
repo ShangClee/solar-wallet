@@ -1,14 +1,13 @@
-import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import { fade, useTheme } from "@material-ui/core/styles"
-import ErrorIcon from "@material-ui/icons/Error"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import { alpha, useTheme } from "@mui/material/styles"
+import ErrorIcon from "@mui/icons-material/Error"
 import React from "react"
 import { Translation, useTranslation } from "react-i18next"
 import { Box, HorizontalLayout, VerticalLayout } from "~Layout/components/Box"
 import { getErrorTranslation } from "../lib/errors"
 
-// tslint:disable-next-line
-const pkg = require("../../../package.json")
+import pkg from "../../../package.json"
 
 const buttonLabels = ["Oh no", "Drats!", "Nevermind", "Let's try this again", "Not my day"]
 
@@ -63,7 +62,7 @@ export const InlineErrorBoundary = ErrorBoundary<InlineErrorBoundaryProps>(funct
       alignItems="center"
       height={props.height}
       style={{
-        background: fade(theme.palette.error.main, 0.2),
+        background: alpha(theme.palette.error.main, 0.2),
         borderRadius: 8,
         color: theme.palette.error.main,
         fontWeight: 600,

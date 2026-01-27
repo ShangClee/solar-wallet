@@ -1,8 +1,8 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Collapse from "@material-ui/core/Collapse"
-import ListItemText from "@material-ui/core/ListItemText"
-import Switch from "@material-ui/core/Switch"
+import Collapse from "@mui/material/Collapse"
+import ListItemText from "@mui/material/ListItemText"
+import Switch from "@mui/material/Switch"
 import AccountSettingsItem from "~AccountSettings/components/AccountSettingsItem"
 import PasswordField from "~Generic/components/PasswordField"
 

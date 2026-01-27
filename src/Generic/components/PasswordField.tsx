@@ -1,9 +1,9 @@
 import React from "react"
-import IconButton from "@material-ui/core/IconButton"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import TextField, { StandardTextFieldProps } from "@material-ui/core/TextField"
-import Visibility from "@material-ui/icons/Visibility"
-import VisibilityOff from "@material-ui/icons/VisibilityOff"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
+import TextField, { StandardTextFieldProps } from "@mui/material/TextField"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 
 function PasswordField(props: Omit<StandardTextFieldProps, "type">) {
   const [showPassword, setShowPassword] = React.useState(false)

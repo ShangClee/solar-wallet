@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import { DepositTransaction, TransferStatus, WithdrawalTransaction } from "@satoshipay/stellar-transfer"
 import { VerticalLayout } from "~Layout/components/Box"
 import { formatDuration } from "../util/formatters"

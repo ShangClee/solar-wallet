@@ -1,7 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { __RouterContext, RouteComponentProps } from "react-router"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
+import { useNavigate, useLocation, useParams } from "react-router-dom"
+import useMediaQuery from "@mui/material/useMediaQuery"
 import { NotificationsContext } from "~App/contexts/notifications"
 import * as Clipboard from "~Platform/clipboard"
 
@@ -46,22 +46,29 @@ export function useDialogActions(): RefStateObject {
   return actionsRef
 }
 
-// TODO: Get rid of this hook once react-router is shipped with a hook out-of-the-box
-export function useRouter<Params = {}>() {
-  const routerContext = React.useContext<RouteComponentProps<Params>>(__RouterContext)
-  const [updateEnforcementState, setUpdateEnforcementState] = React.useState(0)
+export function useRouter<Params extends { [K in keyof Params]?: string } = {}>() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const params = useParams<Params>()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const forceUpdate = () => setUpdateEnforcementState(updateEnforcementState + 1)
-
-  if (!routerContext) {
-    throw new Error("useRouter() hook can only be used within a react-router provider.")
-  }
-
-  React.useEffect(() => {
-    const unsubscribe = routerContext.history.listen(() => forceUpdate())
-    return unsubscribe
-  }, [forceUpdate, routerContext])
-
-  return routerContext
+  return React.useMemo(() => {
+    return {
+      history: {
+        push: (path: string) => navigate(path),
+        replace: (path: string) => navigate(path, { replace: true }),
+        goBack: () => navigate(-1),
+        listen: (_listener: any) => {
+          // console.warn("router.history.listen is deprecated. Use useEffect on location instead.")
+          return () => {}
+        }
+      },
+      location,
+      match: {
+        params,
+        isExact: true,
+        path: location.pathname,
+        url: location.pathname
+      }
+    }
+  }, [navigate, location, params])
 }

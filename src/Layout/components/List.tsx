@@ -1,8 +1,8 @@
 import React from "react"
-import MaterialList from "@material-ui/core/List"
-import MaterialListItem from "@material-ui/core/ListItem"
-import MaterialListItemText from "@material-ui/core/ListItemText"
-import MaterialListSubheader from "@material-ui/core/ListSubheader"
+import MaterialList from "@mui/material/List"
+import MaterialListItem from "@mui/material/ListItem"
+import MaterialListItemText from "@mui/material/ListItemText"
+import MaterialListSubheader from "@mui/material/ListSubheader"
 
 const noop = () => undefined
 

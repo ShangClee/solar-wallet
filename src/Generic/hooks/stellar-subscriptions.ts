@@ -2,7 +2,7 @@
 
 import { ObservableLike } from "observable-fns"
 import React from "react"
-import { Asset, Horizon, ServerApi } from "stellar-sdk"
+import { Asset, Horizon } from "stellar-sdk"
 import { Account } from "~App/contexts/accounts"
 import { createEmptyAccountData, AccountData, BalanceLine } from "../lib/account"
 import { FixedOrderbookRecord } from "../lib/orderbook"
@@ -120,7 +120,7 @@ export function useLiveAccountData(accountID: string, testnet: boolean): Account
   return useLiveAccountDataSet([accountID], testnet)[0]
 }
 
-function applyAccountOffersUpdate(prev: OfferHistory, next: ServerApi.OfferRecord[]): OfferHistory {
+function applyAccountOffersUpdate(prev: OfferHistory, next: Horizon.ServerApi.OfferRecord[]): OfferHistory {
   // We ignore `prev` here
   return { olderOffersAvailable: prev.olderOffersAvailable, offers: next }
 }
@@ -167,7 +167,7 @@ export function useOlderOffers(accountID: string, testnet: boolean) {
 
   const fetchMoreOffers = React.useCallback(
     async function fetchMoreOffers() {
-      let fetched: CollectionPage<ServerApi.OfferRecord>
+      let fetched: CollectionPage<Horizon.ServerApi.OfferRecord>
 
       const selector = [horizonURLs, accountID] as const
       const history = accountOpenOrdersCache.get(selector)
@@ -188,7 +188,7 @@ export function useOlderOffers(accountID: string, testnet: boolean) {
         })
       }
 
-      const fetchedOffers: ServerApi.OfferRecord[] = fetched._embedded.records
+      const fetchedOffers: Horizon.ServerApi.OfferRecord[] = fetched._embedded.records
 
       accountOpenOrdersCache.set(
         selector,
@@ -209,7 +209,7 @@ export function useOlderOffers(accountID: string, testnet: boolean) {
   return fetchMoreOffers
 }
 
-type EffectHandler = (account: Account, effect: ServerApi.EffectRecord) => void
+type EffectHandler = (account: Account, effect: Horizon.ServerApi.EffectRecord) => void
 
 export function useLiveAccountEffects(accounts: Account[], handler: EffectHandler) {
   const netWorker = useNetWorker()
@@ -261,13 +261,13 @@ export function useLiveOrderbook(selling: Asset, buying: Asset, testnet: boolean
   return useDataSubscription(applyOrderbookUpdate, get, set, observe)
 }
 
-const txsMatch = (a: Horizon.TransactionResponse, b: Horizon.TransactionResponse): boolean => {
+const txsMatch = (a: Horizon.HorizonApi.TransactionResponse, b: Horizon.HorizonApi.TransactionResponse): boolean => {
   return a.source_account === b.source_account && a.source_account_sequence === b.source_account_sequence
 }
 
 function applyAccountTransactionsUpdate(
   prev: TransactionHistory,
-  update: Horizon.TransactionResponse
+  update: Horizon.HorizonApi.TransactionResponse
 ): TransactionHistory {
   if (prev.transactions.some(tx => txsMatch(tx, update))) {
     return prev
@@ -326,7 +326,7 @@ export function useOlderTransactions(accountID: string, testnet: boolean) {
 
   const fetchMoreTransactions = React.useCallback(
     async function fetchMoreTransactions() {
-      let fetched: CollectionPage<Horizon.TransactionResponse>
+      let fetched: CollectionPage<Horizon.HorizonApi.TransactionResponse>
 
       const selector = [horizonURLs, accountID] as const
       const history = accountTransactionsCache.get(selector)
@@ -349,7 +349,7 @@ export function useOlderTransactions(accountID: string, testnet: boolean) {
         })
       }
 
-      const fetchedTransactions: Horizon.TransactionResponse[] = fetched._embedded.records
+      const fetchedTransactions: Horizon.HorizonApi.TransactionResponse[] = fetched._embedded.records
 
       accountTransactionsCache.set(
         selector,

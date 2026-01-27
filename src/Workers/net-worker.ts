@@ -32,7 +32,4 @@ export { ConnectionErrorDescription, ConnectionErrorEvent }
 
 registerSerializer(CustomErrorSerializer)
 
-setTimeout(() => {
-  // We had some issues with what appeared to be a race condition at worker spawn time
-  expose(netWorker)
-}, 50)
+expose(netWorker)

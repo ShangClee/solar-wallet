@@ -1,5 +1,5 @@
 import React from "react"
-import List from "@material-ui/core/List"
+import List from "@mui/material/List"
 import { useIsMobile } from "~Generic/hooks/userinterface"
 import { AccountCreation, AccountCreationErrors } from "../types/types"
 import MultisigAccountPubKey from "./MultisigAccountPubKey"

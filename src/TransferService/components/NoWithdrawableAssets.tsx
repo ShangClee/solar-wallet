@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import Typography from "@material-ui/core/Typography"
+import Typography from "@mui/material/Typography"
 import { Account } from "~App/contexts/accounts"
 import * as routes from "~App/routes"
 import { useRouter, RefStateObject } from "~Generic/hooks/userinterface"

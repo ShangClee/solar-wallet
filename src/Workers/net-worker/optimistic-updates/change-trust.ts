@@ -10,7 +10,7 @@ function addTrustline(
 ): OptimisticAccountUpdate {
   return {
     apply(prevAccountData) {
-      const newBalance: Horizon.BalanceLineAsset | Horizon.BalanceLineLiquidityPool =
+      const newBalance: Horizon.HorizonApi.BalanceLineAsset | Horizon.HorizonApi.BalanceLineLiquidityPool =
         operation.line.getAssetType() === "liquidity_pool_shares"
           ? {
               asset_type: "liquidity_pool_shares",

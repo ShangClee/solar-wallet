@@ -1,16 +1,15 @@
 import {
   Account as StellarAccount,
   Asset,
+  Horizon,
   Keypair,
   Memo,
-  Operation,
-  Server,
-  ServerApi,
-  TransactionBuilder,
-  Transaction,
-  xdr,
+  MuxedAccount,
   Networks,
-  MuxedAccount
+  Operation,
+  Transaction,
+  TransactionBuilder,
+  xdr
 } from "stellar-sdk"
 import { Account } from "~App/contexts/accounts"
 import { workers } from "~Workers/worker-controller"
@@ -27,7 +26,7 @@ const maximumFeeToSpend = 1_000_000
 // on the network later when the tx will be submitted to the network
 export const multisigMinimumFee = 10_000
 
-export function createCheapTxID(transaction: Transaction | ServerApi.TransactionRecord): string {
+export function createCheapTxID(transaction: Transaction | Horizon.ServerApi.TransactionRecord): string {
   const source = "source" in transaction ? transaction.source : transaction.source_account
   const sequence = "sequence" in transaction ? transaction.sequence : transaction.source_account_sequence
 
@@ -72,7 +71,7 @@ function getBaseAccountId(key: string) {
     : key
 }
 
-async function accountExists(horizon: Server, publicKey: string) {
+async function accountExists(horizon: Horizon.Server, publicKey: string) {
   try {
     const accountId = getBaseAccountId(publicKey)
     const account = await horizon
@@ -91,14 +90,14 @@ async function accountExists(horizon: Server, publicKey: string) {
   }
 }
 
-function selectTransactionTimeout(accountData: Pick<ServerApi.AccountRecord, "signers">): number {
+function selectTransactionTimeout(accountData: Pick<Horizon.ServerApi.AccountRecord, "signers">): number {
   // Don't forget that we must give the user enough time to enter their password and click ok
   return accountData.signers.length > 1 ? 30 * 24 * 60 * 60 : 90
 }
 
 interface TxBlueprint {
-  accountData: Pick<ServerApi.AccountRecord, "id" | "signers">
-  horizon: Server
+  accountData: Pick<Horizon.ServerApi.AccountRecord, "id" | "signers">
+  horizon: Horizon.Server
   memo?: Memo | null
   minTransactionFee?: number
   walletAccount: Account
@@ -147,7 +146,7 @@ interface PaymentOperationBlueprint {
   amount: string
   asset: Asset
   destination: string
-  horizon: Server
+  horizon: Horizon.Server
 }
 
 export async function createPaymentOperation(options: PaymentOperationBlueprint) {
@@ -178,7 +177,11 @@ export async function signTransaction(transaction: Transaction, walletAccount: A
   return signedTransaction
 }
 
-export async function requiresRemoteSignatures(horizon: Server, transaction: Transaction, walletPublicKey: string) {
+export async function requiresRemoteSignatures(
+  horizon: Horizon.Server,
+  transaction: Transaction,
+  walletPublicKey: string
+) {
   const { netWorker } = await workers
   const horizonURL = horizon.serverURL.toString()
   const sources = getAllSources(transaction)

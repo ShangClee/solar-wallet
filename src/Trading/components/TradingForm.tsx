@@ -2,17 +2,17 @@ import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Asset, Horizon, Operation, Transaction } from "stellar-sdk"
-import Button from "@material-ui/core/Button"
-import ExpansionPanel from "@material-ui/core/ExpansionPanel"
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails"
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import TextField from "@material-ui/core/TextField"
-import Typography from "@material-ui/core/Typography"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
-import GavelIcon from "@material-ui/icons/Gavel"
+import Button from "@mui/material/Button"
+import Accordion from "@mui/material/Accordion"
+import AccordionDetails from "@mui/material/AccordionDetails"
+import AccordionSummary from "@mui/material/AccordionSummary"
+import InputAdornment from "@mui/material/InputAdornment"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import useMediaQuery from "@mui/material/useMediaQuery"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import GavelIcon from "@mui/icons-material/Gavel"
 import { Account } from "~App/contexts/accounts"
 import { trackError } from "~App/contexts/notifications"
 import { warningColor } from "~App/theme"
@@ -73,7 +73,7 @@ interface Props {
   primaryAction: "buy" | "sell"
   sendTransaction: (transaction: Transaction) => void
   style?: React.CSSProperties
-  trustlines: Horizon.BalanceLineAsset[]
+  trustlines: Horizon.HorizonApi.BalanceLineAsset[]
 }
 
 function TradingForm(props: Props) {
@@ -371,21 +371,21 @@ function TradingForm(props: Props) {
             }
           />
         </HorizontalLayout>
-        <ExpansionPanel
+        <Accordion
           className={classes.expansionPanel}
           elevation={0}
           expanded={expanded}
           onChange={() => setExpanded(!expanded)}
         >
-          <ExpansionPanelSummary
+          <AccordionSummary
             classes={{ root: classes.expansionPanelSummary, content: classes.expansionPanelSummaryContent }}
             expandIcon={<ExpandMoreIcon />}
           >
             <Typography align="center" style={{ flexGrow: 1 }}>
               {t("trading.advanced.header")}
             </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+          </AccordionSummary>
+          <AccordionDetails className={classes.expansionPanelDetails}>
             <Controller
               as={
                 <TradingPrice
@@ -409,8 +409,8 @@ function TradingForm(props: Props) {
               }}
               valueName="manualPrice"
             />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
         {relativeSpread >= 0.015 ? (
           <Box margin="32px 0 0" padding="8px 12px" style={{ background: warningColor }}>
             <b>{t("trading.warning.title")}</b>

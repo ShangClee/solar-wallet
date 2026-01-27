@@ -1,13 +1,13 @@
 import React from "react"
 import Async from "react-promise"
-import { xdr, AccountResponse, Asset, Memo, Networks, Operation, Server, TransactionBuilder } from "stellar-sdk"
+import { AccountResponse, Asset, Horizon, Memo, Networks, Operation, TransactionBuilder, xdr } from "stellar-sdk"
 import { storiesOf } from "@storybook/react"
 import { TransactionReviewDialogBody } from "../components/TransactionReviewDialog"
 import { Account } from "~App/contexts/accounts"
 import { useWebAuth } from "~Generic/hooks/stellar"
 
 const eurt = new Asset("EURT", "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S")
-const testnetHorizon = new Server("https://horizon-testnet.stellar.org")
+const testnetHorizon = new Horizon.Server("https://horizon-testnet.stellar.org")
 
 const doNothing = () => undefined
 
@@ -49,7 +49,7 @@ interface SampleWebAuthProps {
 }
 
 function SampleWebAuth(props: SampleWebAuthProps) {
-  const horizon = new Server("https://horizon.stellar.org")
+  const horizon = new Horizon.Server("https://horizon.stellar.org")
   const WebAuth = useWebAuth()
 
   const promise = React.useMemo(

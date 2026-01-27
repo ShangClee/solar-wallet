@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import grey from "@material-ui/core/colors/grey"
+import { grey } from "@mui/material/colors"
 
 const TestnetBadge = (props: { style?: React.CSSProperties }) => {
   const { t } = useTranslation()

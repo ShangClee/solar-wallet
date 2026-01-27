@@ -3,10 +3,10 @@ import { nanoid } from "nanoid"
 import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Asset, Memo, MemoType, Server, Transaction } from "stellar-sdk"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import TextField from "@material-ui/core/TextField"
-import SendIcon from "@material-ui/icons/Send"
+import { Asset, Horizon, Memo, MemoType, Transaction } from "stellar-sdk"
+import InputAdornment from "@mui/material/InputAdornment"
+import TextField from "@mui/material/TextField"
+import SendIcon from "@mui/icons-material/Send"
 import { Account } from "~App/contexts/accounts"
 import { AccountRecord, useWellKnownAccounts } from "~Generic/hooks/stellar-ecosystem"
 import { useFederationLookup } from "~Generic/hooks/stellar"
@@ -336,13 +336,13 @@ interface Props {
   trustedAssets: Asset[]
   txCreationPending?: boolean
   onCancel: () => void
-  onSubmit: (createTx: (horizon: Server, account: Account) => Promise<Transaction>) => any
+  onSubmit: (createTx: (horizon: Horizon.Server, account: Account) => Promise<Transaction>) => any
 }
 
 function PaymentFormContainer(props: Props) {
   const { lookupFederationRecord } = useFederationLookup()
 
-  const createPaymentTx = async (horizon: Server, account: Account, formValues: ExtendedPaymentFormValues) => {
+  const createPaymentTx = async (horizon: Horizon.Server, account: Account, formValues: ExtendedPaymentFormValues) => {
     const asset = props.trustedAssets.find(trustedAsset => trustedAsset.equals(formValues.asset))
     const federationRecord =
       formValues.destination.indexOf("*") > -1 ? await lookupFederationRecord(formValues.destination) : null

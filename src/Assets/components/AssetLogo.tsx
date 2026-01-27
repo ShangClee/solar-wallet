@@ -1,7 +1,7 @@
 import React from "react"
 import { Asset } from "stellar-sdk"
-import Avatar from "@material-ui/core/Avatar"
-import makeStyles from "@material-ui/core/styles/makeStyles"
+import Avatar from "@mui/material/Avatar"
+import { makeStyles } from "~Generic/lib/makeStyles"
 import { useAssetMetadata } from "~Generic/hooks/stellar"
 import { brandColor } from "~App/theme"
 import LumenIcon from "~Icons/components/Lumen"
@@ -74,7 +74,7 @@ function AssetLogo(props: AssetLogoProps) {
     ].join(" ")
     const iconClassName = [classes.icon, applyPadding ? classes.padding : ""].join(" ")
     return (
-      <Avatar alt={name} className={avatarClassName} style={props.style}>
+      <Avatar alt={props.asset.code} className={avatarClassName} style={props.style}>
         {props.imageURL ? <img className={iconClassName} src={props.imageURL} /> : assetCode}
       </Avatar>
     )

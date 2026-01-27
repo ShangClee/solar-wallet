@@ -1,5 +1,5 @@
 import BigNumber from "big.js"
-import { Horizon, Networks, Operation, Server, Transaction, xdr } from "stellar-sdk"
+import { Horizon, Networks, Operation, Transaction, xdr } from "stellar-sdk"
 import { WebauthData } from "@satoshipay/stellar-sep-10"
 import {
   fetchTransferInfos,
@@ -31,7 +31,7 @@ async function createWithdrawalTransaction(
   account: Account,
   accountData: Horizon.AccountResponse,
   amount: BigNumber,
-  horizon: Server,
+  horizon: Horizon.Server,
   instructions: WithdrawalInstructionsSuccess,
   withdrawal: Withdrawal
 ): Promise<Transaction> {
@@ -168,7 +168,14 @@ export function useWithdrawalState(account: Account, closeDialog: () => void) {
       )
     }
 
-    return createWithdrawalTransaction(account, accountData, amount, new Server(horizonURL), instructions, withdrawal)
+    return createWithdrawalTransaction(
+      account,
+      accountData,
+      amount,
+      new Horizon.Server(horizonURL),
+      instructions,
+      withdrawal
+    )
   }
 
   const pollKYCStatus = async (withdrawal: Withdrawal, transferTxId: string, authToken?: string) => {

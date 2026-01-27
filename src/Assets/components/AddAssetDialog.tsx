@@ -1,12 +1,12 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, AssetType, Horizon, Operation, Server, Transaction } from "stellar-sdk"
-import Dialog from "@material-ui/core/Dialog"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemText from "@material-ui/core/ListItemText"
-import { makeStyles } from "@material-ui/core/styles"
-import AddIcon from "@material-ui/icons/Add"
+import { Asset, AssetType, Horizon, Operation, Transaction } from "stellar-sdk"
+import Dialog from "@mui/material/Dialog"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemText from "@mui/material/ListItemText"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import AddIcon from "@mui/icons-material/Add"
 import { Account } from "~App/contexts/accounts"
 import { trackError } from "~App/contexts/notifications"
 import * as routes from "~App/routes"
@@ -39,7 +39,7 @@ function issuerMatches(issuerDetails: AssetRecord["issuer_detail"], search: stri
   return issuerDetails.name.toLowerCase().startsWith(search)
 }
 
-function assetToBalance(asset: Asset): Horizon.BalanceLineAsset {
+function assetToBalance(asset: Asset): Horizon.HorizonApi.BalanceLineAsset {
   return {
     asset_code: asset.getCode(),
     asset_issuer: asset.getIssuer(),
@@ -229,7 +229,7 @@ const useAddAssetStyles = makeStyles({
 interface AddAssetDialogProps {
   account: Account
   accountData: AccountData
-  horizon: Server
+  horizon: Horizon.Server
   hpadding: number
   itemHPadding: number
   onClose: () => void

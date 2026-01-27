@@ -1,5 +1,5 @@
 import { createStore, KeysData } from "key-store"
-import { Networks, Keypair, Transaction } from "stellar-sdk"
+import { Keypair, Networks, Transaction } from "stellar-sdk"
 import { Messages } from "../../shared/ipc"
 import { WrongPasswordError } from "../../Generic/lib/errors"
 

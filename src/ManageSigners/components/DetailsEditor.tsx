@@ -1,5 +1,5 @@
-import Typography from "@material-ui/core/Typography"
-import CheckIcon from "@material-ui/icons/Check"
+import Typography from "@mui/material/Typography"
+import CheckIcon from "@mui/icons-material/Check"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { Horizon } from "stellar-sdk"

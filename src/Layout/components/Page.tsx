@@ -3,8 +3,7 @@ import { Box, BoxProps } from "./Box"
 import { useIsMobile } from "~Generic/hooks/userinterface"
 import { primaryBackground } from "~App/theme"
 
-// tslint:disable-next-line
-const platform = process.env.PLATFORM || require("os").platform()
+const platform = process.env.PLATFORM || (window.electron ? "darwin" : "web")
 
 const isFramelessWindow = platform === "darwin"
 

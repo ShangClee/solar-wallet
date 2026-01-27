@@ -1,10 +1,10 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { Asset } from "stellar-sdk"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import MenuItem from "@material-ui/core/MenuItem"
-import Select from "@material-ui/core/Select"
-import TextField from "@material-ui/core/TextField"
+import InputAdornment from "@mui/material/InputAdornment"
+import MenuItem from "@mui/material/MenuItem"
+import Select from "@mui/material/Select"
+import TextField from "@mui/material/TextField"
 
 interface TradingPriceProps {
   defaultPrice?: string

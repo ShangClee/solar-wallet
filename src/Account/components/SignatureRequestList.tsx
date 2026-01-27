@@ -1,4 +1,4 @@
-import ListSubheader from "@material-ui/core/ListSubheader"
+import ListSubheader from "@mui/material/ListSubheader"
 import { TransactionStellarUri } from "@stellarguard/stellar-uri"
 import React from "react"
 import { Transaction } from "stellar-sdk"
@@ -75,12 +75,7 @@ export const SignatureRequestList = React.memo(function SignatureRequestList(pro
     }
 
     handleNavigation(router.location.pathname)
-
-    const unsubscribe = router.history.listen(location => {
-      handleNavigation(location.pathname)
-    })
-    return unsubscribe
-  }, [router.history, router.location.pathname, sendTransaction, props.signatureRequests])
+  }, [router.location.pathname, sendTransaction, props.signatureRequests])
 
   const openSignatureRequest = (tx: Transaction, signatureRequest: MultisigTransactionResponse) => {
     router.history.push(routes.showTransaction(props.account.id, signatureRequest.hash))

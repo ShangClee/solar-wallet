@@ -1,9 +1,9 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Asset, Operation, Server, Transaction } from "stellar-sdk"
-import Dialog from "@material-ui/core/Dialog"
-import ClearIcon from "@material-ui/icons/Clear"
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz"
+import { Asset, Horizon, Operation, Transaction } from "stellar-sdk"
+import Dialog from "@mui/material/Dialog"
+import ClearIcon from "@mui/icons-material/Clear"
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz"
 import { Account } from "~App/contexts/accounts"
 import { trackError } from "~App/contexts/notifications"
 import * as routes from "~App/routes"
@@ -23,7 +23,7 @@ const dialogActionsBoxStyle: React.CSSProperties = {
 interface Props {
   account: Account
   asset: Asset
-  horizon: Server
+  horizon: Horizon.Server
   sendTransaction: SendTransaction
 }
 

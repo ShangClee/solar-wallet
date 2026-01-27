@@ -1,12 +1,12 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Operation, Transaction, Server } from "stellar-sdk"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import Switch from "@material-ui/core/Switch"
-import Typography from "@material-ui/core/Typography"
-import DeleteIcon from "@material-ui/icons/Delete"
-import WarnIcon from "@material-ui/icons/Warning"
+import { Horizon, Operation, Transaction } from "stellar-sdk"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import Switch from "@mui/material/Switch"
+import Typography from "@mui/material/Typography"
+import DeleteIcon from "@mui/icons-material/Delete"
+import WarnIcon from "@mui/icons-material/Warning"
 import AccountSelectionList from "~Account/components/AccountSelectionList"
 import { Account, AccountsContext } from "~App/contexts/accounts"
 import { createTransaction } from "~Generic/lib/transaction"
@@ -90,7 +90,7 @@ interface Warning {
 
 interface AccountDeletionDialogProps {
   account: Account
-  horizon: Server
+  horizon: Horizon.Server
   onClose: () => void
   onDelete: () => void
   sendTransaction: (transaction: Transaction) => void

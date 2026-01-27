@@ -1,8 +1,8 @@
 import React from "react"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
+import ListItem from "@mui/material/ListItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import { makeStyles } from "~Generic/lib/makeStyles"
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import { breakpoints } from "~App/theme"
 
 const isMobileDevice = process.env.PLATFORM === "android" || process.env.PLATFORM === "ios"

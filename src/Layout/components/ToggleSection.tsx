@@ -1,7 +1,7 @@
 import React from "react"
-import Switch from "@material-ui/core/Switch"
-import Typography from "@material-ui/core/Typography"
-import { makeStyles } from "@material-ui/core/styles"
+import Switch from "@mui/material/Switch"
+import Typography from "@mui/material/Typography"
+import { makeStyles } from "~Generic/lib/makeStyles"
 import { Box } from "./Box"
 
 const useToggleSectionStyles = makeStyles({

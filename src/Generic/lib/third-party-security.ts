@@ -1,4 +1,4 @@
-import { Server, Transaction, Horizon } from "stellar-sdk"
+import { Horizon, Transaction } from "stellar-sdk"
 import { CustomError } from "./errors"
 import StellarGuardIcon from "~Icons/components/StellarGuard"
 import LobstrVaultIcon from "~Icons/components/LobstrVault"
@@ -34,7 +34,7 @@ const services: ThirdPartySecurityService[] = [
   }
 ]
 
-export async function isThirdPartyProtected(horizon: Server, accountPubKey: string) {
+export async function isThirdPartyProtected(horizon: Horizon.Server, accountPubKey: string) {
   const { netWorker } = await workers
   const horizonURL = horizon.serverURL.toString()
 

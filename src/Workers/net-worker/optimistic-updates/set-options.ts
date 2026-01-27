@@ -9,7 +9,7 @@ function addSigner(
 ): OptimisticUpdate<Horizon.AccountResponse> {
   return {
     apply(prevAccountData) {
-      const allOtherSigners = prevAccountData.signers.filter((existing) => {
+      const allOtherSigners = prevAccountData.signers.filter(existing => {
         return existing.key !== signer.ed25519PublicKey
       })
       return {
@@ -22,7 +22,7 @@ function addSigner(
             weight: signer.weight!
           }
         ]
-      }
+      } as any
     },
     effectsAccountID: operation.source || transaction.source,
     horizonURL,
@@ -74,7 +74,7 @@ function setMasterWeight(
             return signer
           }
         })
-      }
+      } as any
     },
     effectsAccountID: accountID,
     horizonURL,
@@ -104,7 +104,7 @@ function setThresholds(
       return {
         ...prevAccountData,
         thresholds
-      }
+      } as any
     },
     effectsAccountID: operation.source || transaction.source,
     horizonURL,

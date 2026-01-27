@@ -21,7 +21,7 @@ function sendMessage<Message extends keyof IPC.MessageType>(
         } else if (data.result) {
           resolve(data.result)
         } else {
-          resolve()
+          resolve(undefined as any)
         }
       }
     }

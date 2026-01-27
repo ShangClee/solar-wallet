@@ -1,5 +1,5 @@
 import React from "react"
-import { Route, Switch } from "react-router-dom"
+import { Route, Routes, useParams } from "react-router-dom"
 import AccountPage from "~Account/components/AccountView"
 import SettingsPage from "~AppSettings/components/AppSettingsView"
 import { MainErrorBoundary } from "~Generic/components/ErrorBoundaries"
@@ -24,6 +24,15 @@ const CreateTestnetAccount = () => (
   </React.Suspense>
 )
 
+const AccountPageWrapper = () => {
+  const params = useParams()
+  return (
+    <React.Suspense fallback={null}>
+      <AccountPage accountID={params.id} />
+    </React.Suspense>
+  )
+}
+
 function Stage2() {
   React.useEffect(() => {
     appIsLoaded()
@@ -33,45 +42,43 @@ function Stage2() {
       <VerticalLayout height="100%" style={{ WebkitOverflowScrolling: "touch" }}>
         <VerticalLayout height="100%" grow overflowY="hidden">
           <MainErrorBoundary>
-            <Switch>
-              <Route exact path="/" component={AllAccountsPage} />
-              <Route
-                exact
-                path={[
-                  "/account/create/mainnet",
-                  "/account/import/mainnet",
-                  "/account/join/mainnet",
-                  "/account/new/mainnet"
-                ]}
-                component={CreateMainnetAccount}
-              />
-              <Route
-                exact
-                path={[
-                  "/account/create/testnet",
-                  "/account/import/testnet",
-                  "/account/join/testnet",
-                  "/account/new/testnet"
-                ]}
-                component={CreateTestnetAccount}
-              />
-              <Route
-                path={["/account/:id/:action/:subaction", "/account/:id/:action", "/account/:id"]}
-                render={props => (
-                  <React.Suspense fallback={null}>
-                    <AccountPage accountID={props.match.params.id} />
-                  </React.Suspense>
-                )}
-              />
-              <Route
-                path={["/settings/:action", "/settings"]}
-                render={() => (
-                  <React.Suspense fallback={null}>
-                    <SettingsPage />
-                  </React.Suspense>
-                )}
-              />
-            </Switch>
+            <Routes>
+              <Route path="/" element={<AllAccountsPage />} />
+
+              {[
+                "/account/create/mainnet",
+                "/account/import/mainnet",
+                "/account/join/mainnet",
+                "/account/new/mainnet"
+              ].map(path => (
+                <Route key={path} path={path} element={<CreateMainnetAccount />} />
+              ))}
+
+              {[
+                "/account/create/testnet",
+                "/account/import/testnet",
+                "/account/join/testnet",
+                "/account/new/testnet"
+              ].map(path => (
+                <Route key={path} path={path} element={<CreateTestnetAccount />} />
+              ))}
+
+              {["/account/:id/:action/:subaction", "/account/:id/:action", "/account/:id"].map(path => (
+                <Route key={path} path={path} element={<AccountPageWrapper />} />
+              ))}
+
+              {["/settings/:action", "/settings"].map(path => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={
+                    <React.Suspense fallback={null}>
+                      <SettingsPage />
+                    </React.Suspense>
+                  }
+                />
+              ))}
+            </Routes>
           </MainErrorBoundary>
         </VerticalLayout>
       </VerticalLayout>

@@ -103,9 +103,9 @@ docker run --rm -ti \
  -v ~/.cache/electron-builder:/root/.cache/electron-builder \
  -v /Volumes/Certificates/solar:/root/Certs \
  electronuserland/builder:wine-mono bash -c 'npm config set script-shell bash && npm install && npm run build:win:signed'
- ```
- 
- **Note:** We have seen weird module resolution troubles with Parcel. In this case make sure to `rm -rf node_modules/` **on the host**, then try again.
+```
+
+**Note:** We have migrated to Vite. If you encounter issues, try `rm -rf node_modules/` **on the host**, then `npm install` and try again.
 
 ### Signed binaries
 
@@ -132,6 +132,33 @@ Note: Application signing has only been tested on a Mac OS development machine s
 #### Android/iOS
 
 See [Cordova build readme](./cordova/README.md).
+
+## Modernization & Upgrades (2025/2026)
+
+This codebase has undergone a significant modernization effort to bring it up to date with current web standards.
+
+### Key Changes
+
+- **Build System**: Migrated from Parcel to **Vite** for significantly faster dev server start times and builds.
+- **React**: Upgraded from v16 to **React 19**.
+  - Cleaned up conflicting dependencies (removed `react-router` v5 in favor of `react-router-dom` v6).
+- **TypeScript**: Upgraded from v3.9 to **v5.3**.
+- **UI Library**: Migrated from Material-UI v4 to **MUI v6** (using Emotion).
+  - Replaced JSS `makeStyles` with `tss-react` for compatibility with Emotion.
+  - Updated component imports (e.g., `@mui/material`, `@mui/icons-material`).
+- **Routing**: Upgraded from React Router v5 to **React Router v6**.
+  - Replaced `Switch` with `Routes`.
+  - Replaced `useHistory` with `useNavigate`.
+- **Cryptography**: Replaced `sodium-native` with `sodium-javascript` to improve cross-platform compatibility and remove native build dependencies.
+- **Stellar SDK**: Upgraded from v9 to **v14.5.0**.
+  - Migrated to new namespace structure (e.g., `Horizon.Server`, `Federation.Server`).
+  - Updated type definitions to match the new SDK architecture.
+
+### Developer Notes
+
+- **Vite Config**: Configuration can be found in `vite.config.ts`.
+- **Legacy Shims**: A `makeStyles` shim (`src/Generic/lib/makeStyles.ts`) is used to bridge the gap between the old JSS API and the new Emotion-based styling, allowing for incremental migration.
+- **EventSource**: A polyfill is provided in `src/Generic/lib/event-source-shim.ts` to ensure compatibility.
 
 ## License
 

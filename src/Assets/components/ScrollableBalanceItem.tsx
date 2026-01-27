@@ -1,5 +1,5 @@
 import React from "react"
-import makeStyles from "@material-ui/core/styles/makeStyles"
+import { makeStyles } from "~Generic/lib/makeStyles"
 import { balancelineToAsset } from "~Generic/lib/stellar"
 import { breakpoints } from "~App/theme"
 import { SingleBalance } from "~Account/components/AccountBalances"
