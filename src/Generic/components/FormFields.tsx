@@ -51,30 +51,35 @@ type PriceInputProps = TextFieldProps & {
 }
 
 export const PriceInput = React.memo(function PriceInput(props: PriceInputProps) {
-  const { assetCode, assetStyle, readOnly, ...textfieldProps } = props
+  const { assetCode, assetStyle, readOnly, disableUnderline, ...textfieldProps } = props
   const InputField = readOnly ? ReadOnlyTextfield : TextField
+
+  const inputProps = {
+    endAdornment: (
+      <InputAdornment
+        disableTypography
+        position="end"
+        style={{
+          pointerEvents: typeof assetCode === "string" ? "none" : undefined,
+          ...assetStyle
+        }}
+      >
+        {assetCode}
+      </InputAdornment>
+    ),
+    ...(disableUnderline !== undefined && !readOnly ? { disableUnderline } : {}),
+    ...textfieldProps.InputProps
+  }
+
   return (
     <InputField
       {...textfieldProps}
+      {...(readOnly ? { disableUnderline } : {})}
       inputProps={{
         pattern: "[0-9]*",
         inputMode: "decimal"
       }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment
-            disableTypography
-            position="end"
-            style={{
-              pointerEvents: typeof assetCode === "string" ? "none" : undefined,
-              ...assetStyle
-            }}
-          >
-            {assetCode}
-          </InputAdornment>
-        ),
-        ...textfieldProps.InputProps
-      }}
+      InputProps={inputProps}
       style={{
         pointerEvents: props.readOnly ? "none" : undefined,
         ...textfieldProps.style

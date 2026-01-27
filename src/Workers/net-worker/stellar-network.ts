@@ -148,14 +148,19 @@ export async function checkHorizonOrFailover(primaryHorizonURL: string, secondar
   // Account ID of friendbot (account exists on pubnet, too)
   const testAccountID = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR"
 
+  // console.log(`[Worker] Checking horizon health: ${primaryHorizonURL}`)
+
   try {
     // fetch dynamic data to check database access
     const primaryResponse = await Promise.race([
       fetch(new URL(`/accounts/${testAccountID}`, primaryHorizonURL).href),
-      delay(2500).then(() => {
+      delay(5000).then(() => {
+        // Increased timeout to 5s
         throw Error(`Horizon health check timed out. Trying failover…`)
       })
     ])
+
+    // console.log(`[Worker] Primary horizon ${primaryHorizonURL} status: ${primaryResponse.status}`)
 
     if (primaryResponse.status < 300 || primaryResponse.status === 404) {
       // consider request successful on 404 as well (account might be missing but horizon is working)
@@ -164,15 +169,30 @@ export async function checkHorizonOrFailover(primaryHorizonURL: string, secondar
     }
   } catch (error) {
     // tslint:disable-next-line no-console
-    console.error(error)
+    console.error(`[Worker] Primary horizon check failed:`, error)
   }
 
-  const secondaryResponse = await fetch(new URL(`/accounts/${testAccountID}`, secondaryHorizonURL).href)
-  const serverToUse =
-    secondaryResponse.status < 300 || secondaryResponse.status === 404 ? secondaryHorizonURL : primaryHorizonURL
+  // console.log(`[Worker] Checking secondary horizon: ${secondaryHorizonURL}`)
 
-  debug(`Primary horizon server check failed. Using ${serverToUse}`)
-  return serverToUse
+  try {
+    const secondaryResponse = await Promise.race([
+      fetch(new URL(`/accounts/${testAccountID}`, secondaryHorizonURL).href),
+      delay(5000).then(() => {
+        throw Error(`Secondary Horizon health check timed out.`)
+      })
+    ])
+
+    // console.log(`[Worker] Secondary horizon ${secondaryHorizonURL} status: ${secondaryResponse.status}`)
+
+    const serverToUse =
+      secondaryResponse.status < 300 || secondaryResponse.status === 404 ? secondaryHorizonURL : primaryHorizonURL
+
+    debug(`Primary horizon server check failed. Using ${serverToUse}`)
+    return serverToUse
+  } catch (error) {
+    console.error(`[Worker] Secondary horizon check failed:`, error)
+    return primaryHorizonURL // Fallback to primary if both fail
+  }
 }
 
 export function resetAllSubscriptions() {
@@ -708,22 +728,37 @@ export async function fetchAccountData(
   accountID: string,
   priority: number = 2
 ): Promise<(Horizon.AccountResponse & { home_domain?: string | undefined }) | null> {
+  // console.log(`[Worker] fetchAccountData for ${accountID} starting...`)
   const horizonURL = Array.isArray(horizonURLs) ? getRandomURL(horizonURLs) : horizonURLs
   const fetchQueue = getFetchQueue(horizonURL)
   const url = new URL(`/accounts/${accountID}?${qs.stringify(identification)}`, horizonURL)
-  const response = await fetchQueue.add(() => fetch(String(url)), { priority })
 
-  if (response.status === 404) {
-    return null
-  }
+  try {
+    const response = await fetchQueue.add(
+      () => {
+        // console.log(`[Worker] Fetching ${url}...`)
+        return fetch(String(url))
+      },
+      { priority }
+    )
 
-  const accountData = (await parseJSONResponse(response)) as Horizon.AccountResponse & {
-      home_domain: string | undefined
+    // console.log(`[Worker] Fetch response for ${accountID}: ${response.status}`)
+
+    if (response.status === 404) {
+      return null
     }
-    // FIXME: Add support for liquidity pools
-    // Remove liquidity pools from account data
-  ;(accountData as any).balances = accountData.balances.filter(b => b.asset_type !== "liquidity_pool_shares")
-  return optimisticallyUpdateAccountData(horizonURL, accountData)
+
+    const accountData = (await parseJSONResponse(response)) as Horizon.AccountResponse & {
+        home_domain: string | undefined
+      }
+      // FIXME: Add support for liquidity pools
+      // Remove liquidity pools from account data
+    ;(accountData as any).balances = accountData.balances.filter(b => b.asset_type !== "liquidity_pool_shares")
+    return optimisticallyUpdateAccountData(horizonURL, accountData)
+  } catch (error) {
+    console.error(`[Worker] fetchAccountData error for ${accountID}:`, error)
+    throw error
+  }
 }
 
 export async function fetchLatestAccountEffect(horizonURL: string, accountID: string) {
