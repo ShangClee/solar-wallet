@@ -21,24 +21,24 @@ function WithdrawalSuccess(props: WithdrawalSuccessProps) {
   return (
     <VerticalLayout grow>
       <VerticalLayout alignItems="center" margin="24px 0" textAlign="center">
-        <Typography variant="h5">{t("transfer-service.withdrawal-success.body.withdrawal-in-progress")}</Typography>
+        <Typography variant="h5">{t("transfer-service.withdrawal-success.body.withdrawal-in-progress") as React.ReactNode}</Typography>
         <Typography style={{ margin: "16px 0" }} variant="body2">
           <Typography style={{ margin: "8px 0" }} variant="body2">
             {t(
               "transfer-service.withdrawal-success.body.info.1",
               `${transferServer.domain} is conducting the withdrawal.`,
               { domain: transferServer.domain }
-            )}
+            ) as React.ReactNode}
           </Typography>
           <Typography style={{ margin: "8px 0" }} variant="body2">
-            {t("transfer-service.withdrawal-success.body.info.2")}
+            {t("transfer-service.withdrawal-success.body.info.2") as React.ReactNode}
           </Typography>
           {/* TODO: Show nice summary */}
         </Typography>
         <Portal desktop="inline" target={props.dialogActionsRef && props.dialogActionsRef.element}>
           <DialogActionsBox>
             <ActionButton onClick={props.onClose} type="primary">
-              {t("transfer-service.withdrawal-success.action.close")}
+              {t("transfer-service.withdrawal-success.action.close") as React.ReactNode}
             </ActionButton>
           </DialogActionsBox>
         </Portal>
@@ -50,8 +50,8 @@ function WithdrawalSuccess(props: WithdrawalSuccessProps) {
 const Sidebar = () => {
   const { t } = useTranslation()
   return (
-    <Summary headline={t("transfer-service.withdrawal-success.sidebar.headline")}>
-      <Paragraph>{t("transfer-service.withdrawal-success.sidebar.info")}</Paragraph>
+    <Summary headline={t("transfer-service.withdrawal-success.sidebar.headline") as React.ReactNode}>
+      <Paragraph>{t("transfer-service.withdrawal-success.sidebar.info") as React.ReactNode}</Paragraph>
     </Summary>
   )
 }

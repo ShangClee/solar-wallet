@@ -717,10 +717,12 @@ export async function fetchAccountData(
     return null
   }
 
-  const accountData = await parseJSONResponse<Horizon.AccountResponse & { home_domain: string | undefined }>(response)
-  // FIXME: Add support for liquidity pools
-  // Remove liquidity pools from account data
-  accountData.balances = accountData.balances.filter(b => b.asset_type !== "liquidity_pool_shares")
+  const accountData = (await parseJSONResponse(response)) as Horizon.AccountResponse & {
+      home_domain: string | undefined
+    }
+    // FIXME: Add support for liquidity pools
+    // Remove liquidity pools from account data
+  ;(accountData as any).balances = accountData.balances.filter(b => b.asset_type !== "liquidity_pool_shares")
   return optimisticallyUpdateAccountData(horizonURL, accountData)
 }
 

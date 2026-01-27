@@ -56,7 +56,7 @@ function addTrustline(
         })
           ? prevAccountData.balances
           : [...prevAccountData.balances, newBalance]
-      }
+      } as any
     },
     effectsAccountID: operation.source || transaction.source,
     horizonURL,
@@ -91,7 +91,7 @@ function removeTrustline(
             return false
           }
         })
-      }
+      } as any
     },
     effectsAccountID: operation.source || transaction.source,
     horizonURL,

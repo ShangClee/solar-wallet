@@ -1,3 +1,4 @@
+import "./worker-polyfills"
 import DebugLogger from "debug"
 import { expose, registerSerializer } from "threads"
 import { CustomErrorSerializer } from "../Generic/lib/errors"

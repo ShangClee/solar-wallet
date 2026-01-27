@@ -44,7 +44,7 @@ function removeSigner(
         signers: prevAccountData.signers.filter(
           prevSigner => !(prevSigner.type === "ed25519_public_key" && prevSigner.key === signer.ed25519PublicKey)
         )
-      }
+      } as any
     },
     effectsAccountID: operation.source || transaction.source,
     horizonURL,

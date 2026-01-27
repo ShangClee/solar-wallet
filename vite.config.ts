@@ -26,7 +26,7 @@ export default defineConfig({
     // Polyfill process.env for legacy code
     "process.env": {},
     // Polyfill global for legacy code
-    global: "window",
+    global: "globalThis",
     // Polyfill process.browser for legacy code
     "process.browser": true
   }

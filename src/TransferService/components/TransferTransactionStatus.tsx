@@ -79,13 +79,13 @@ function TransferTransactionStatus(props: TransferTransactionStatusProps) {
                   "transfer-service.transaction-status.pending-user-transfer-start.info",
                   `${props.domain} requires further information from you.`,
                   { domain: props.domain }
-                )}
+                ) as React.ReactNode}
               </Paragraph>
             )
           } else if (props.transaction.more_info_url) {
             return (
               <Paragraph>
-                {t("transfer-service.transaction-status.more-info-url.info")}
+                {t("transfer-service.transaction-status.more-info-url.info") as React.ReactNode}
                 <br />
                 <a href={props.transaction.more_info_url} target="_blank" rel="noopener noreferrer">
                   {props.transaction.more_info_url}

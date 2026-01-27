@@ -51,7 +51,7 @@ async function createWithdrawalTransaction(
       asset: withdrawal.asset,
       destination: instructions.data.account_id,
       withMuxing: true
-    })
+    } as any)
   ]
 
   return createTransaction(operations, {
