@@ -378,16 +378,20 @@ function subscribeToAccountEffectsUncached(horizonURLs: string[], accountID: str
   )
 }
 
+function getAccountEffectsObservable(horizonURLs: string[], accountID: string) {
+  return cachify(
+    effectsSubscriptionCache,
+    subscribeToAccountEffectsUncached,
+    createAccountCacheKey
+  )(horizonURLs, accountID)
+}
+
 export function subscribeToAccountEffects(
   horizonURLs: string[],
   accountID: string,
   onUpdate: (data: Horizon.ServerApi.EffectRecord) => void
 ) {
-  const observable = cachify(
-    effectsSubscriptionCache,
-    subscribeToAccountEffectsUncached,
-    createAccountCacheKey
-  )(horizonURLs, accountID)
+  const observable = getAccountEffectsObservable(horizonURLs, accountID)
 
   const subscription = observable.subscribe(onUpdate)
   return proxy(() => subscription.unsubscribe())
@@ -450,7 +454,7 @@ function subscribeToAccountUncached(horizonURLs: string[], accountID: string) {
         }
         return merge(
           // Update whenever we receive an account effect push notification
-          subscribeToAccountEffects(horizonURLs, accountID).pipe(map(() => fetchAccountData(horizonURLs, accountID))),
+          getAccountEffectsObservable(horizonURLs, accountID).pipe(map(() => fetchAccountData(horizonURLs, accountID))),
           // Update on new optimistic updates
           accountDataUpdates.observe().pipe(
             map(handleNewOptimisticUpdate),
@@ -525,7 +529,7 @@ function subscribeToAccountTransactionsUncached(horizonURLs: string[], accountID
   })
 
   return multicast(
-    subscribeToAccountEffects(horizonURLs, accountID).pipe(
+    getAccountEffectsObservable(horizonURLs, accountID).pipe(
       flatMap(async function*(): AsyncIterableIterator<Horizon.HorizonApi.TransactionResponse> {
         for (let i = 0; i < 3; i++) {
           const [page, order] = await fetchLatestTxs()
@@ -630,7 +634,7 @@ function subscribeToOpenOrdersUncached(horizonURLs: string[], accountID: string)
         // unreliable and the account effects stream only indicates a trade
         // happening, not the creation/cancellation of one
         return merge(
-          subscribeToAccountEffects(horizonURLs, accountID).pipe(map(() => fetchUpdate())),
+          getAccountEffectsObservable(horizonURLs, accountID).pipe(map(() => fetchUpdate())),
           offerUpdates.observe().pipe(map(handleNewOptimisticUpdate))
         )
       }

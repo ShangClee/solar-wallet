@@ -1,5 +1,5 @@
 import { proxy } from "comlink"
-import { Observable, Subject } from "observable-fns"
+import { Subject } from "observable-fns"
 
 export const enum ServiceID {
   HorizonPublic = "HorizonPublic",

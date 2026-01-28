@@ -2,7 +2,7 @@ import "./worker-polyfills"
 
 import DebugLogger from "debug"
 import { expose } from "comlink"
-import { ConnectionErrorDescription, ConnectionErrorEvent, Exposed as Errors, ServiceID } from "./net-worker/errors"
+import { Exposed as Errors, ServiceID } from "./net-worker/errors"
 
 import * as Multisig from "./net-worker/multisig"
 import * as SEP10 from "./net-worker/sep-10"
