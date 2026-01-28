@@ -93,7 +93,7 @@ const useActionButtonStyles = makeStyles(theme => ({
       margin: 12,
       padding: 20,
 
-      "&:not(:first-child)": {
+      "&:not(:first-of-type)": {
         flexBasis: "calc(50% - 16px)",
         marginLeft: 6
       },

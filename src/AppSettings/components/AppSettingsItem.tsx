@@ -1,5 +1,6 @@
 import React from "react"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import { makeStyles } from "~Generic/lib/makeStyles"
 import ListItemText from "@mui/material/ListItemText"
@@ -37,7 +38,7 @@ const useAppSettingsItemStyles = makeStyles({
     "&$actionable:hover": {
       backgroundColor: isMobileDevice ? "#FFFFFF" : "rgb(232, 232, 232)"
     },
-    "&:not(:first-child)": {
+    "&:not(:first-of-type)": {
       borderTop: "1px solid rgba(230, 230, 230, 1.0)"
     }
   },
@@ -57,6 +58,7 @@ interface AppSettingsItemProps {
 function AppSettingsItem(props: AppSettingsItemProps) {
   const classes = useAppSettingsItemStyles()
   const isSmallScreen = useIsMobile()
+  const isButton = Boolean(props.onClick)
 
   const { actions, primaryText, secondaryText, style } = props
 
@@ -70,16 +72,20 @@ function AppSettingsItem(props: AppSettingsItemProps) {
   const className = `${classes.settingsItem} ${props.onClick ? classes.actionable : ""}`
 
   return (
-    <ListItem
-      button={Boolean(props.onClick) as any}
-      className={className}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      style={style}
-    >
-      <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
-      <ListItemText primary={primaryText} secondary={secondaryText} style={listItemTextStyle} />
-      {actions}
+    <ListItem disablePadding={isButton} className={isButton ? undefined : className} style={style}>
+      {isButton ? (
+        <ListItemButton className={className} disabled={props.disabled} onClick={props.onClick}>
+          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
+          <ListItemText primary={primaryText} secondary={secondaryText} style={listItemTextStyle} />
+          {actions}
+        </ListItemButton>
+      ) : (
+        <>
+          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
+          <ListItemText primary={primaryText} secondary={secondaryText} style={listItemTextStyle} />
+          {actions}
+        </>
+      )}
     </ListItem>
   )
 }

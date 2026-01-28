@@ -2,6 +2,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { Asset } from "stellar-sdk"
 import InputAdornment from "@mui/material/InputAdornment"
+import Input from "@mui/material/Input"
 import MenuItem from "@mui/material/MenuItem"
 import Select from "@mui/material/Select"
 import TextField from "@mui/material/TextField"
@@ -34,7 +35,7 @@ const TradingPrice = React.forwardRef(function TradingPrice(props: TradingPriceP
     <InputAdornment position="end">
       <Select
         disabled={isDisabled}
-        disableUnderline
+        input={<Input disableUnderline />}
         onChange={event => props.onSetPriceDenotedIn(event.target.value as any)}
         style={{ fontWeight: 400 }}
         value={props.priceDenotedIn}

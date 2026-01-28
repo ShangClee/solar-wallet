@@ -133,6 +133,7 @@ function AssetSelector(props: AssetSelectorProps) {
       placeholder="Select an asset"
       select
       style={{ flexShrink: 0, ...props.style }}
+      variant={props.disableUnderline ? "standard" : undefined}
       value={props.value ? props.value.getCode() : ""}
       FormHelperTextProps={{
         className: classes.helperText
@@ -141,6 +142,7 @@ function AssetSelector(props: AssetSelectorProps) {
         classes: {
           root: classes.input
         },
+        ...(props.disableUnderline === true ? { disableUnderline: true } : {}),
         style: {
           minWidth: props.minWidth
         }
@@ -151,7 +153,6 @@ function AssetSelector(props: AssetSelectorProps) {
           select: classes.select
         },
         displayEmpty: !props.value,
-        disableUnderline: props.disableUnderline,
         renderValue: () => (props.value ? props.value.getCode() : "Select")
       }}
     >

@@ -11,7 +11,7 @@ const useToggleSectionStyles = makeStyles({
     marginTop: 24,
     paddingLeft: 4,
 
-    "&:first-child": {
+    "&:first-of-type": {
       marginTop: 0
     }
   },

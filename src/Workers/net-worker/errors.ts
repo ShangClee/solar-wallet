@@ -1,3 +1,4 @@
+import { proxy } from "comlink"
 import { Observable, Subject } from "observable-fns"
 
 export const enum ServiceID {
@@ -21,7 +22,10 @@ export type ConnectionErrorEvent = ConnectionErrorDescription | ConnectionErrorR
 const connectionErrorsSubject = new Subject<ConnectionErrorEvent>()
 
 export const Exposed = {
-  connectionErrors: () => Observable.from(connectionErrorsSubject)
+  subscribeToConnectionErrors: (onEvent: (event: ConnectionErrorEvent) => void) => {
+    const subscription = connectionErrorsSubject.subscribe(onEvent)
+    return proxy(() => subscription.unsubscribe())
+  }
 }
 
 export function raiseConnectionError(error: Error, service: ServiceID) {

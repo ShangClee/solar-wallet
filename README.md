@@ -153,6 +153,9 @@ This codebase has undergone a significant modernization effort to bring it up to
 - **Stellar SDK**: Upgraded from v9 to **v14.5.0**.
   - Migrated to new namespace structure (e.g., `Horizon.Server`, `Federation.Server`).
   - Updated type definitions to match the new SDK architecture.
+- **Worker Infrastructure**: Migrated from `threads` to **Comlink**.
+  - Replaced legacy Observable-based communication with standard `postMessage` proxies.
+  - Resolved serialization and timeout issues in the Vite/ESM environment.
 
 ### Developer Notes
 

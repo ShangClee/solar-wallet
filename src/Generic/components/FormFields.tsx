@@ -53,6 +53,8 @@ type PriceInputProps = TextFieldProps & {
 export const PriceInput = React.memo(function PriceInput(props: PriceInputProps) {
   const { assetCode, assetStyle, readOnly, disableUnderline, ...textfieldProps } = props
   const InputField = readOnly ? ReadOnlyTextfield : TextField
+  const variant = textfieldProps.variant
+  const allowDisableUnderline = variant === "standard" || variant === "filled"
 
   const inputProps = {
     endAdornment: (
@@ -67,21 +69,19 @@ export const PriceInput = React.memo(function PriceInput(props: PriceInputProps)
         {assetCode}
       </InputAdornment>
     ),
-    ...(disableUnderline !== undefined && !readOnly ? { disableUnderline } : {}),
+    ...(disableUnderline !== undefined && !readOnly && allowDisableUnderline ? { disableUnderline } : {}),
     ...textfieldProps.InputProps
   }
 
   return (
     <InputField
       {...textfieldProps}
-      {...(readOnly ? { disableUnderline } : {})}
       inputProps={{
         pattern: "[0-9]*",
         inputMode: "decimal"
       }}
       InputProps={inputProps}
       style={{
-        pointerEvents: props.readOnly ? "none" : undefined,
         ...textfieldProps.style
       }}
     />
@@ -112,7 +112,6 @@ export const ReadOnlyTextfield = React.memo(function ReadOnlyTextfield(props: Re
   const InputProps: InputProps = {
     disableUnderline: disableUnderline === false ? false : true,
     multiline,
-    disabled: true,
     readOnly: true,
     ...props.InputProps
   }

@@ -6,6 +6,7 @@ import HumanTime from "react-human-time"
 import Collapse from "@mui/material/Collapse"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import ListSubheader from "@mui/material/ListSubheader"
@@ -419,33 +420,70 @@ export const TransactionListItem = React.memo(function TransactionListItem(props
 
   const paymentSummary = getPaymentSummary(props.accountPublicKey, transaction)
   const onOpen = onOpenTransaction ? () => onOpenTransaction(restoredTransaction.hash().toString("hex")) : undefined
+  const isButton = Boolean(onOpen)
 
   return (
-    <ListItem button={Boolean(onOpen) as any} className={props.className || ""} onClick={onOpen} style={props.style}>
-      <ListItemIcon style={{ marginRight: isSmallScreen ? 0 : undefined }}>
-        {props.icon || <TransactionIcon paymentSummary={paymentSummary} transaction={transaction} />}
-      </ListItemIcon>
-      <TransactionItemText
-        accountPublicKey={props.accountPublicKey}
-        alwaysShowSource={props.alwaysShowSource}
-        createdAt={props.createdAt}
-        paymentSummary={paymentSummary}
-        showMemo={!hideMemos}
-        style={{
-          fontSize: isSmallScreen ? "0.8rem" : undefined,
-          fontWeight: "bold",
-          overflow: "hidden",
-          paddingRight: 0,
-          textOverflow: "ellipsis"
-        }}
-        transaction={transaction}
-      />
-      <TransactionListItemBalance
-        accountPublicKey={props.accountPublicKey}
-        paymentSummary={paymentSummary}
-        style={{ paddingRight: 0 }}
-        transaction={transaction}
-      />
+    <ListItem
+      disablePadding={isButton}
+      className={isButton ? undefined : props.className || ""}
+      onClick={isButton ? undefined : onOpen}
+      style={props.style}
+    >
+      {isButton ? (
+        <ListItemButton className={props.className || ""} onClick={onOpen}>
+          <ListItemIcon style={{ marginRight: isSmallScreen ? 0 : undefined }}>
+            {props.icon || <TransactionIcon paymentSummary={paymentSummary} transaction={transaction} />}
+          </ListItemIcon>
+          <TransactionItemText
+            accountPublicKey={props.accountPublicKey}
+            alwaysShowSource={props.alwaysShowSource}
+            createdAt={props.createdAt}
+            paymentSummary={paymentSummary}
+            showMemo={!hideMemos}
+            style={{
+              fontSize: isSmallScreen ? "0.8rem" : undefined,
+              fontWeight: "bold",
+              overflow: "hidden",
+              paddingRight: 0,
+              textOverflow: "ellipsis"
+            }}
+            transaction={transaction}
+          />
+          <TransactionListItemBalance
+            accountPublicKey={props.accountPublicKey}
+            paymentSummary={paymentSummary}
+            style={{ paddingRight: 0 }}
+            transaction={transaction}
+          />
+        </ListItemButton>
+      ) : (
+        <>
+          <ListItemIcon style={{ marginRight: isSmallScreen ? 0 : undefined }}>
+            {props.icon || <TransactionIcon paymentSummary={paymentSummary} transaction={transaction} />}
+          </ListItemIcon>
+          <TransactionItemText
+            accountPublicKey={props.accountPublicKey}
+            alwaysShowSource={props.alwaysShowSource}
+            createdAt={props.createdAt}
+            paymentSummary={paymentSummary}
+            showMemo={!hideMemos}
+            style={{
+              fontSize: isSmallScreen ? "0.8rem" : undefined,
+              fontWeight: "bold",
+              overflow: "hidden",
+              paddingRight: 0,
+              textOverflow: "ellipsis"
+            }}
+            transaction={transaction}
+          />
+          <TransactionListItemBalance
+            accountPublicKey={props.accountPublicKey}
+            paymentSummary={paymentSummary}
+            style={{ paddingRight: 0 }}
+            transaction={transaction}
+          />
+        </>
+      )}
     </ListItem>
   )
 })

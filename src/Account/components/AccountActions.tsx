@@ -12,7 +12,7 @@ export const useButtonStyles = makeStyles(theme => ({
     margin: "0",
     padding: "24px 0 0",
 
-    "& $button:last-child:not(:first-child)": {
+    "& $button:last-child:not(:first-of-type)": {
       marginLeft: 40
     }
   },

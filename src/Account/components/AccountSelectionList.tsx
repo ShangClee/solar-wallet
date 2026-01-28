@@ -1,6 +1,7 @@
 import React from "react"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import { makeStyles } from "~Generic/lib/makeStyles"
@@ -75,24 +76,25 @@ const AccountSelectionListItem = React.memo(
   function AccountSelectionListItem(props: AccountSelectionListItemProps) {
     const classes = useAccountListItemStyles()
     return (
-      <ListItem
-        button
-        className={classes.listItem}
-        disabled={props.disabled}
-        selected={props.selected}
-        onClick={event => props.onClick(event, props.index)}
-      >
-        <ListItemIcon style={{ marginRight: 0 }}>
-          <Radio checked={props.selected && !props.disabled} color="default" />
-        </ListItemIcon>
-        <ListItemText
-          primary={props.account.name}
-          secondary={
-            <React.Suspense fallback={<InlineLoader />}>
-              <AccountBalances publicKey={props.account.accountID} testnet={props.account.testnet} />
-            </React.Suspense>
-          }
-        />
+      <ListItem disablePadding>
+        <ListItemButton
+          className={classes.listItem}
+          disabled={props.disabled}
+          selected={props.selected}
+          onClick={event => props.onClick(event as any, props.index)}
+        >
+          <ListItemIcon style={{ marginRight: 0 }}>
+            <Radio checked={props.selected && !props.disabled} color="default" />
+          </ListItemIcon>
+          <ListItemText
+            primary={props.account.name}
+            secondary={
+              <React.Suspense fallback={<InlineLoader />}>
+                <AccountBalances publicKey={props.account.accountID} testnet={props.account.testnet} />
+              </React.Suspense>
+            }
+          />
+        </ListItemButton>
       </ListItem>
     )
   } as React.ComponentType<AccountSelectionListItemProps>

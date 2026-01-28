@@ -18,7 +18,7 @@ const useTrustedServiceListItemStyles = makeStyles({
   listItem: {
     background: "#FFFFFF",
     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.1)",
-    "&:first-child": {
+    "&:first-of-type": {
       borderTopLeftRadius: 8,
       borderTopRightRadius: 8
     },

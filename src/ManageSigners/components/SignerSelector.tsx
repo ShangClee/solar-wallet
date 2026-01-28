@@ -1,5 +1,6 @@
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import Radio from "@mui/material/Radio"
@@ -24,20 +25,22 @@ function SignerSelector(props: SignerSelectorProps) {
     <RadioGroup value={props.selected?.key || ""}>
       <List>
         {props.signers.map(signer => (
-          <ListItem button key={signer.key} onClick={() => props.onSelect(signer)}>
-            <ListItemIcon>
-              <Radio edge="start" value={signer.key} />
-            </ListItemIcon>
-            <ListItemText
-              primary={<Address address={signer.key} variant="full" testnet={props.testnet} />}
-              secondary={
-                props.accounts.some(
-                  account => account.publicKey === signer.key && account.testnet === props.testnet
-                ) ? (
-                  <span>{t("account-settings.manage-signers.signers-editor.list.item.local-key")}</span>
-                ) : null
-              }
-            />
+          <ListItem disablePadding key={signer.key}>
+            <ListItemButton onClick={() => props.onSelect(signer)}>
+              <ListItemIcon>
+                <Radio edge="start" value={signer.key} />
+              </ListItemIcon>
+              <ListItemText
+                primary={<Address address={signer.key} variant="full" testnet={props.testnet} />}
+                secondary={
+                  props.accounts.some(
+                    account => account.publicKey === signer.key && account.testnet === props.testnet
+                  ) ? (
+                    <span>{t("account-settings.manage-signers.signers-editor.list.item.local-key")}</span>
+                  ) : null
+                }
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>

@@ -1,5 +1,6 @@
 import React from "react"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemText from "@mui/material/ListItemText"
 import { makeStyles } from "~Generic/lib/makeStyles"
 import { breakpoints } from "~App/theme"
@@ -53,13 +54,13 @@ interface ButtonListItemProps {
 function ButtonListItem(props: ButtonListItemProps) {
   const classes = useButtonListItemStyles()
   return (
-    <ListItem
-      button
-      className={`${classes.root} ${props.gutterBottom ? classes.gutterBottom : ""}`}
-      onClick={props.onClick}
-      style={props.style}
-    >
-      <ListItemText classes={{ primary: classes.textTypography }}>{props.children}</ListItemText>
+    <ListItem disablePadding style={props.style}>
+      <ListItemButton
+        className={`${classes.root} ${props.gutterBottom ? classes.gutterBottom : ""}`}
+        onClick={props.onClick}
+      >
+        <ListItemText classes={{ primary: classes.textTypography }}>{props.children}</ListItemText>
+      </ListItemButton>
     </ListItem>
   )
 }

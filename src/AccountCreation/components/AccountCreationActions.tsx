@@ -51,7 +51,7 @@ function AccountCreationActions(props: AccountCreationActionsProps) {
               className={buttonClassName}
               icon={<CheckIcon style={{ fontSize: "120%" }} />}
               onClick={props.onActionButtonClick}
-              type="primary"
+              variant="contained"
             >
               {t("create-account.action.create")}
             </ActionButton>
@@ -62,7 +62,7 @@ function AccountCreationActions(props: AccountCreationActionsProps) {
               className={buttonClassName}
               icon={<CheckIcon style={{ fontSize: "120%" }} />}
               onClick={props.onActionButtonClick}
-              type="primary"
+              variant="contained"
             >
               {t("create-account.action.import")}
             </ActionButton>
@@ -73,7 +73,7 @@ function AccountCreationActions(props: AccountCreationActionsProps) {
               className={buttonClassName}
               icon={<CheckIcon style={{ fontSize: "120%" }} />}
               onClick={props.onActionButtonClick}
-              type="primary"
+              variant="contained"
             >
               {t("create-account.action.join-shared")}
             </ActionButton>

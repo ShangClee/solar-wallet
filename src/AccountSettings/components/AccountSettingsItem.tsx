@@ -1,5 +1,6 @@
 import React from "react"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import { makeStyles } from "~Generic/lib/makeStyles"
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
@@ -38,7 +39,7 @@ const useAccountSettingsItemStyles = makeStyles({
     "&$button:hover": {
       backgroundColor: isMobileDevice ? "#FFFFFF" : "rgb(232, 232, 232)"
     },
-    "&:not(:first-child):not($subItem)": {
+    "&:not(:first-of-type):not($subItem)": {
       borderTop: "1px solid rgba(230, 230, 230, 1.0)"
     }
   },
@@ -73,20 +74,28 @@ const AccountSettingsItem = React.forwardRef(function AccountSettingsItem(
   )
 
   return (
-    <ListItem
-      button={isButton as any}
-      className={className}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      ref={ref}
-    >
-      <ListItemIcon className={classes.icon}>{props.icon || <div />}</ListItemIcon>
-      {props.children}
-      {props.caret && props.caret !== "hide" ? (
-        <ListItemIcon className={`${classes.caret} ${props.caret === "down" ? classes.rotateRight : ""}`}>
-          <KeyboardArrowRightIcon className={classes.caret} />
-        </ListItemIcon>
-      ) : null}
+    <ListItem disablePadding={isButton} className={isButton ? undefined : className} ref={ref}>
+      {isButton ? (
+        <ListItemButton className={className} disabled={props.disabled} onClick={props.onClick}>
+          <ListItemIcon className={classes.icon}>{props.icon || <div />}</ListItemIcon>
+          {props.children}
+          {props.caret && props.caret !== "hide" ? (
+            <ListItemIcon className={`${classes.caret} ${props.caret === "down" ? classes.rotateRight : ""}`}>
+              <KeyboardArrowRightIcon className={classes.caret} />
+            </ListItemIcon>
+          ) : null}
+        </ListItemButton>
+      ) : (
+        <>
+          <ListItemIcon className={classes.icon}>{props.icon || <div />}</ListItemIcon>
+          {props.children}
+          {props.caret && props.caret !== "hide" ? (
+            <ListItemIcon className={`${classes.caret} ${props.caret === "down" ? classes.rotateRight : ""}`}>
+              <KeyboardArrowRightIcon className={classes.caret} />
+            </ListItemIcon>
+          ) : null}
+        </>
+      )}
     </ListItem>
   )
 })

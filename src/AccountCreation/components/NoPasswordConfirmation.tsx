@@ -14,7 +14,7 @@ function NoPasswordConfirmation(props: NoPasswordConfirmationProps) {
     <ConfirmDialog
       cancelButton={<ActionButton onClick={props.onClose}>{t("create-account.action.cancel")}</ActionButton>}
       confirmButton={
-        <ActionButton onClick={props.onConfirm} type="primary">
+        <ActionButton onClick={props.onConfirm} variant="contained">
           {t("create-account.action.confirm")}
         </ActionButton>
       }

@@ -1,6 +1,7 @@
 import React from "react"
 import MaterialList from "@mui/material/List"
 import MaterialListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import MaterialListItemText from "@mui/material/ListItemText"
 import MaterialListSubheader from "@mui/material/ListSubheader"
 
@@ -23,6 +24,7 @@ interface ListItemProps {
 }
 
 const ListItem = (props: ListItemProps) => {
+  const isButton = Boolean(props.button || props.onClick)
   const content = (
     <div
       style={{
@@ -42,12 +44,18 @@ const ListItem = (props: ListItemProps) => {
       {props.rightIcon ? <IconDiv>{props.rightIcon}</IconDiv> : null}
     </div>
   )
+  if (isButton) {
+    return (
+      <MaterialListItem disablePadding style={props.style}>
+        <ListItemButton onClick={props.onClick || noop}>
+          <MaterialListItemText primary={content} />
+        </ListItemButton>
+      </MaterialListItem>
+    )
+  }
+
   return (
-    <MaterialListItem
-      button={(props.button || Boolean(props.onClick)) as any}
-      onClick={props.onClick || noop}
-      style={props.style}
-    >
+    <MaterialListItem style={props.style}>
       <MaterialListItemText primary={content} />
     </MaterialListItem>
   )

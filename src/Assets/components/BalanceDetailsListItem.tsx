@@ -2,6 +2,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import Badge from "@mui/material/Badge"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import { makeStyles } from "~Generic/lib/makeStyles"
@@ -97,6 +98,7 @@ interface BalanceListItemProps {
 function BalanceListItem(props: BalanceListItemProps) {
   const classes = useBalanceItemStyles()
   const className = `${props.className || ""} ${props.onClick ? classes.clickable : ""}`
+  const isButton = Boolean(props.onClick)
 
   const asset = React.useMemo(() => balancelineToAsset(props.balance), [props.balance])
   const assetMetadata = useAssetMetadata(asset, props.testnet)
@@ -109,39 +111,68 @@ function BalanceListItem(props: BalanceListItemProps) {
 
   if (props.balance.asset_type === "native") {
     return (
-      <ListItem
-        button={Boolean(props.onClick) as any}
-        className={className}
-        onClick={props.onClick}
-        style={props.style}
-      >
-        <ListItemIcon className={classes.icon}>
-          <AssetLogo
-            asset={asset}
-            className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
-            testnet={props.testnet}
-          />
-        </ListItemIcon>
-        <ListItemText
-          classes={{
-            root: classes.mainListItemText,
-            primary: classes.mainListItemTextPrimaryTypography,
-            secondary: classes.mainListItemTextSecondaryTypography
-          }}
-          primary={
-            props.spendableBalance
-              ? t("account.balance-details.item.spendable-balance.primary")
-              : "Stellar Lumens (XLM)"
-          }
-          secondary={props.spendableBalance ? undefined : "stellar.org"}
-        />
-        <ListItemText
-          classes={{
-            root: classes.balanceListItemText,
-            primary: classes.balanceText
-          }}
-          primary={balance}
-        />
+      <ListItem disablePadding={isButton} className={isButton ? undefined : className} style={props.style}>
+        {isButton ? (
+          <ListItemButton className={className} onClick={props.onClick}>
+            <ListItemIcon className={classes.icon}>
+              <AssetLogo
+                asset={asset}
+                className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
+                testnet={props.testnet}
+              />
+            </ListItemIcon>
+            <ListItemText
+              classes={{
+                root: classes.mainListItemText,
+                primary: classes.mainListItemTextPrimaryTypography,
+                secondary: classes.mainListItemTextSecondaryTypography
+              }}
+              primary={
+                props.spendableBalance
+                  ? t("account.balance-details.item.spendable-balance.primary")
+                  : "Stellar Lumens (XLM)"
+              }
+              secondary={props.spendableBalance ? undefined : "stellar.org"}
+            />
+            <ListItemText
+              classes={{
+                root: classes.balanceListItemText,
+                primary: classes.balanceText
+              }}
+              primary={balance}
+            />
+          </ListItemButton>
+        ) : (
+          <>
+            <ListItemIcon className={classes.icon}>
+              <AssetLogo
+                asset={asset}
+                className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
+                testnet={props.testnet}
+              />
+            </ListItemIcon>
+            <ListItemText
+              classes={{
+                root: classes.mainListItemText,
+                primary: classes.mainListItemTextPrimaryTypography,
+                secondary: classes.mainListItemTextSecondaryTypography
+              }}
+              primary={
+                props.spendableBalance
+                  ? t("account.balance-details.item.spendable-balance.primary")
+                  : "Stellar Lumens (XLM)"
+              }
+              secondary={props.spendableBalance ? undefined : "stellar.org"}
+            />
+            <ListItemText
+              classes={{
+                root: classes.balanceListItemText,
+                primary: classes.balanceText
+              }}
+              primary={balance}
+            />
+          </>
+        )}
       </ListItem>
     )
   }
@@ -151,31 +182,62 @@ function BalanceListItem(props: BalanceListItemProps) {
     assetName !== props.balance.asset_code ? `${assetName} (${props.balance.asset_code})` : props.balance.asset_code
 
   return (
-    <ListItem button={Boolean(props.onClick) as any} className={className} onClick={props.onClick} style={props.style}>
-      <ListItemIcon className={classes.icon}>
-        <Badge badgeContent={props.badgeCount} classes={{ badge: classes.badge }} color="primary">
-          <AssetLogo
-            asset={asset}
-            className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
-            dark
-            testnet={props.testnet}
+    <ListItem disablePadding={isButton} className={isButton ? undefined : className} style={props.style}>
+      {isButton ? (
+        <ListItemButton className={className} onClick={props.onClick}>
+          <ListItemIcon className={classes.icon}>
+            <Badge badgeContent={props.badgeCount} classes={{ badge: classes.badge }} color="primary">
+              <AssetLogo
+                asset={asset}
+                className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
+                dark
+                testnet={props.testnet}
+              />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText
+            className={classes.mainListItemText}
+            classes={{
+              primary: classes.mainListItemTextPrimaryTypography,
+              secondary: classes.mainListItemTextSecondaryTypography
+            }}
+            primary={title}
+            secondary={<AccountName publicKey={props.balance.asset_issuer} testnet={props.testnet} />}
           />
-        </Badge>
-      </ListItemIcon>
-      <ListItemText
-        className={classes.mainListItemText}
-        classes={{
-          primary: classes.mainListItemTextPrimaryTypography,
-          secondary: classes.mainListItemTextSecondaryTypography
-        }}
-        primary={title}
-        secondary={<AccountName publicKey={props.balance.asset_issuer} testnet={props.testnet} />}
-      />
-      <ListItemText
-        className={classes.balanceListItemText}
-        primary={balance}
-        primaryTypographyProps={{ className: classes.balanceText }}
-      />
+          <ListItemText
+            className={classes.balanceListItemText}
+            primary={balance}
+            primaryTypographyProps={{ className: classes.balanceText }}
+          />
+        </ListItemButton>
+      ) : (
+        <>
+          <ListItemIcon className={classes.icon}>
+            <Badge badgeContent={props.badgeCount} classes={{ badge: classes.badge }} color="primary">
+              <AssetLogo
+                asset={asset}
+                className={`${classes.logo} ${props.hideLogo ? classes.logoHidden : ""}`}
+                dark
+                testnet={props.testnet}
+              />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText
+            className={classes.mainListItemText}
+            classes={{
+              primary: classes.mainListItemTextPrimaryTypography,
+              secondary: classes.mainListItemTextSecondaryTypography
+            }}
+            primary={title}
+            secondary={<AccountName publicKey={props.balance.asset_issuer} testnet={props.testnet} />}
+          />
+          <ListItemText
+            className={classes.balanceListItemText}
+            primary={balance}
+            primaryTypographyProps={{ className: classes.balanceText }}
+          />
+        </>
+      )}
     </ListItem>
   )
 }

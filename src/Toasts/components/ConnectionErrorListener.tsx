@@ -1,3 +1,4 @@
+import { proxy } from "comlink"
 import React from "react"
 import { NotificationsContext } from "~App/contexts/notifications"
 import { useNetWorker } from "~Generic/hooks/workers"
@@ -42,7 +43,7 @@ function useRecentConnectionErrors() {
     setTimeout(() => setRecentConnectionErrors(removeFromErrors(timestampedError)), autoHideDuration)
   }, [])
 
-  const beatsExistingErrors = (error: ConnectionErrorEvent) => {
+  const beatsExistingErrors = React.useCallback((error: ConnectionErrorEvent) => {
     const errorPrio = connectionErrorPriorities[error.service]
     const recentConnectionErrors = recentConnectionErrorsRef.current
 
@@ -50,7 +51,7 @@ function useRecentConnectionErrors() {
       recentConnectionErrors.length === 0 ||
       recentConnectionErrors.every(prevError => connectionErrorPriorities[prevError.error.service] <= errorPrio)
     )
-  }
+  }, [])
 
   return {
     beatsExisting: beatsExistingErrors,
@@ -64,16 +65,27 @@ function ConnectionErrorListener() {
   const recentErrors = useRecentConnectionErrors()
 
   React.useEffect(() => {
-    const subscription = netWorker
-      .connectionErrors()
-      .filter(recentErrors.beatsExisting)
-      .subscribe(error => {
-        Notifications.showConnectionError({
-          message: connectionErrorMessages[error.service]
+    let unsubscribe: () => void
+
+    const setupSubscription = async () => {
+      const unsub = await netWorker.subscribeToConnectionErrors(
+        proxy(error => {
+          if (recentErrors.beatsExisting(error)) {
+            Notifications.showConnectionError({
+              message: connectionErrorMessages[error.service]
+            })
+            recentErrors.track(error)
+          }
         })
-        recentErrors.track(error)
-      })
-    return () => subscription.unsubscribe()
+      )
+      unsubscribe = unsub
+    }
+
+    setupSubscription()
+
+    return () => {
+      if (unsubscribe) unsubscribe()
+    }
   }, [Notifications, netWorker, recentErrors])
 
   return null

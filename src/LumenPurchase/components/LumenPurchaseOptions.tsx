@@ -3,6 +3,7 @@ import React from "react"
 import { Trans, useTranslation } from "react-i18next"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import OpenInNewIcon from "@mui/icons-material/OpenInNew"
@@ -56,14 +57,16 @@ function LumenDepositOptions(props: LumenDepositOptionsProps) {
 
   return (
     <List style={{ margin: "16px auto", maxWidth: 600 }}>
-      <ListItem button onClick={openLegalNote}>
-        <ListItemText
-          primary={t("account.purchase-lumens.moonpay.text.primary")}
-          secondary={t("account.purchase-lumens.moonpay.text.secondary")}
-        />
-        <ListItemIcon style={{ minWidth: 24, marginLeft: 12 }}>
-          <OpenInNewIcon />
-        </ListItemIcon>
+      <ListItem disablePadding>
+        <ListItemButton onClick={openLegalNote}>
+          <ListItemText
+            primary={t("account.purchase-lumens.moonpay.text.primary")}
+            secondary={t("account.purchase-lumens.moonpay.text.secondary")}
+          />
+          <ListItemIcon style={{ minWidth: 24, marginLeft: 12 }}>
+            <OpenInNewIcon />
+          </ListItemIcon>
+        </ListItemButton>
       </ListItem>
       <LegalConfirmation
         message={
