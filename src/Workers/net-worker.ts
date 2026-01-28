@@ -1,8 +1,7 @@
 import "./worker-polyfills"
 
 import DebugLogger from "debug"
-import { expose, registerSerializer } from "threads"
-import { CustomErrorSerializer } from "../Generic/lib/errors"
+import { expose } from "comlink"
 import { ConnectionErrorDescription, ConnectionErrorEvent, Exposed as Errors, ServiceID } from "./net-worker/errors"
 
 import * as Multisig from "./net-worker/multisig"
@@ -31,7 +30,7 @@ const netWorker = {
 export type NetWorker = typeof netWorker
 export type Service = ServiceID
 
-export { ConnectionErrorDescription, ConnectionErrorEvent }
+export { ConnectionErrorDescription, ConnectionErrorEvent } from "./net-worker/errors"
 
-registerSerializer(CustomErrorSerializer)
 expose(netWorker)
+console.log("[net-worker] Exposed.")

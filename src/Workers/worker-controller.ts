@@ -1,6 +1,6 @@
-import "threads/register"
-import { ModuleThread, registerSerializer, spawn } from "threads"
-import { CustomErrorSerializer } from "../Generic/lib/errors"
+// import "threads/register"
+import { wrap, Remote } from "comlink"
+// import { CustomErrorSerializer } from "../Generic/lib/errors"
 import { NetWorker as NetWorkerInterface } from "./net-worker"
 
 const WORKER_TIMEOUT_MS = 15000
@@ -9,22 +9,30 @@ function withTimeout<T>(p: Promise<T>, ms: number, message: string): Promise<T> 
   return Promise.race([p, new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), ms))])
 }
 
-// Load worker eagerly
-const netWorker = new Worker(new URL("./net-worker.ts", import.meta.url), { type: "module" })
+// @ts-ignore
+import NetWorkerConstructor from "./net-worker?worker"
 
-registerSerializer(CustomErrorSerializer)
+// registerSerializer(CustomErrorSerializer)
 
 async function spawnNetWorker() {
+  console.log("[worker-controller] Spawning worker...")
+  const worker = new NetWorkerConstructor()
+  const netWorker = wrap<NetWorkerInterface>(worker)
+
+  // Wait for worker to be ready (optional, or just start using it)
+  // Comlink doesn't have an explicit handshake, but we can call a method
+  // console.log("[worker-controller] Worker spawned. Enabling logging...")
+  // await netWorker.enableLogging(localStorage.getItem("debug") || "")
+  // console.log("[worker-controller] Worker ready.")
+
+  // Handle app events
   window.addEventListener("message", event => {
     if (event.data && ["app:pause", "app:resume"].indexOf(event.data) > -1) {
-      netWorker.postMessage(event.data)
+      worker.postMessage(event.data)
     }
   })
 
-  const worker = await spawn<NetWorkerInterface>(netWorker)
-  await worker.enableLogging(localStorage.getItem("debug") || "")
-
-  return worker
+  return netWorker
 }
 
 async function spawnWorkers() {
@@ -59,4 +67,4 @@ export const workers = withTimeout(
   "Network worker failed to start in time. Please refresh the page."
 )
 
-export type NetWorker = ModuleThread<NetWorkerInterface>
+export type NetWorker = Remote<NetWorkerInterface>

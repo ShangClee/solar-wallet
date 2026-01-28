@@ -1,6 +1,7 @@
+import { proxy } from "comlink"
 // tslint:disable:no-shadowed-variable
 
-import { ObservableLike } from "observable-fns"
+// import { ObservableLike } from "observable-fns"
 import React from "react"
 import { Asset, Horizon } from "stellar-sdk"
 import { Account } from "~App/contexts/accounts"
@@ -24,7 +25,7 @@ import { useNetWorker } from "./workers"
 
 function useDataSubscriptions<DataT, UpdateT>(
   reducer: (prev: DataT, update: UpdateT) => DataT,
-  items: Array<{ get(): DataT; set(value: DataT): void; observe(): ObservableLike<UpdateT> }>
+  items: Array<{ get(): DataT; set(value: DataT): void; subscribe(cb: (data: UpdateT) => void): Promise<() => void> }>
 ): DataT[] {
   const unfinishedFetches: Array<Promise<DataT>> = []
   const [, setRefreshCounter] = useDebouncedState(0, 100)
@@ -36,22 +37,24 @@ function useDataSubscriptions<DataT, UpdateT>(
   }
 
   React.useEffect(() => {
-    items.map(item => {
-      return item.observe().subscribe({
-        next(update) {
-          item.set(reducer(item.get(), update))
-          setRefreshCounter(counter => counter + 1)
-        },
-        error(error) {
-          // tslint:disable-next-line
-          console.error(error)
-        }
-      })
-    })
+    const unsubscribers: Array<() => void> = []
+
+    const setupSubscriptions = async () => {
+      for (const item of items) {
+        const unsub = await item.subscribe(
+          proxy((update: UpdateT) => {
+            item.set(reducer(item.get(), update))
+            setRefreshCounter(counter => counter + 1)
+          })
+        )
+        unsubscribers.push(unsub)
+      }
+    }
+
+    setupSubscriptions()
 
     return () => {
-      // Don't unsubscribe to prevent missing updates (related to #1088)
-      // subscriptions.forEach(subscription => unsubscribe(subscription))
+      unsubscribers.forEach(unsub => unsub())
     }
   }, [reducer, items, setRefreshCounter])
 
@@ -62,9 +65,9 @@ function useDataSubscription<DataT, UpdateT>(
   reducer: (prev: DataT, update: UpdateT) => DataT,
   get: () => DataT,
   set: (value: DataT) => void,
-  observe: () => ObservableLike<UpdateT>
+  subscribe: (cb: (data: UpdateT) => void) => Promise<() => void>
 ): DataT {
-  const items = React.useMemo(() => [{ get, set, observe }], [get, set, observe])
+  const items = React.useMemo(() => [{ get, set, subscribe }], [get, set, subscribe])
   return useDataSubscriptions(reducer, items)[0]
 }
 
@@ -73,8 +76,8 @@ function applyAccountDataUpdate(prev: AccountData, next: AccountData): AccountDa
   return next
 }
 
-// Timeout for individual data fetches (5 seconds) - fail fast and retry
-const DATA_FETCH_TIMEOUT_MS = 5000
+// Timeout for individual data fetches (15 seconds) - fail fast and retry
+const DATA_FETCH_TIMEOUT_MS = 15000
 
 function withDataFetchTimeout<T>(promise: Promise<T>, accountID: string): Promise<T> {
   return Promise.race([
@@ -110,16 +113,20 @@ export function useLiveAccountDataSet(accountIDs: string[], testnet: boolean): A
             return (
               accountDataCache.get(selector) ||
               accountDataCache.suspend(selector, () =>
-                withDataFetchTimeout(netWorker.fetchAccountData(horizonURLs, accountID), accountID).then(prepare)
+                withDataFetchTimeout(netWorker.fetchAccountData(horizonURLs, accountID), accountID)
+                  .then(prepare)
+                  .catch(() => createEmptyAccountData(accountID))
               )
             )
           },
           set(updated: AccountData) {
             accountDataCache.set(selector, updated)
           },
-          observe() {
-            return accountDataCache.observe(selector, () =>
-              netWorker.subscribeToAccount(horizonURLs, accountID).map(prepare)
+          subscribe(cb: (data: AccountData) => void) {
+            return netWorker.subscribeToAccount(
+              horizonURLs,
+              accountID,
+              proxy(data => cb(prepare(data)))
             )
           }
         }
@@ -143,7 +150,7 @@ export function useLiveAccountOffers(accountID: string, testnet: boolean): Offer
   const horizonURLs = useHorizonURLs(testnet)
   const netWorker = useNetWorker()
 
-  const { get, set, observe } = React.useMemo(() => {
+  const { get, set, subscribe } = React.useMemo(() => {
     const selector = [horizonURLs, accountID] as const
     const limit = 10
     return {
@@ -151,11 +158,18 @@ export function useLiveAccountOffers(accountID: string, testnet: boolean): Offer
         return (
           accountOpenOrdersCache.get(selector) ||
           accountOpenOrdersCache.suspend(selector, async () => {
-            const page = await netWorker.fetchAccountOpenOrders(horizonURLs, accountID, { limit, order: "desc" })
-            const offers = page._embedded.records
-            return {
-              olderOffersAvailable: offers.length === limit,
-              offers
+            try {
+              const page = await withDataFetchTimeout(
+                netWorker.fetchAccountOpenOrders(horizonURLs, accountID, { limit, order: "desc" }),
+                accountID
+              )
+              const offers = page._embedded.records
+              return {
+                olderOffersAvailable: offers.length === limit,
+                offers
+              }
+            } catch {
+              return { olderOffersAvailable: false, offers: [] }
             }
           })
         )
@@ -165,13 +179,13 @@ export function useLiveAccountOffers(accountID: string, testnet: boolean): Offer
         const olderOffersAvailable = updated.offers.length === limit
         accountOpenOrdersCache.set(selector, { ...updated, olderOffersAvailable })
       },
-      observe() {
-        return netWorker.subscribeToOpenOrders(horizonURLs, accountID)
+      subscribe(cb: (data: Horizon.ServerApi.OfferRecord[]) => void) {
+        return netWorker.subscribeToOpenOrders(horizonURLs, accountID, proxy(cb))
       }
     }
   }, [accountID, horizonURLs, netWorker])
 
-  return useDataSubscription(applyAccountOffersUpdate, get, set, observe)
+  return useDataSubscription(applyAccountOffersUpdate, get, set, subscribe)
 }
 
 export function useOlderOffers(accountID: string, testnet: boolean) {
@@ -231,14 +245,23 @@ export function useLiveAccountEffects(accounts: Account[], handler: EffectHandle
   const testnetHorizonURLs = useHorizonURLs(true)
 
   React.useEffect(() => {
-    const subscriptions = accounts.map(account => {
-      const horizonURLs = account.testnet ? testnetHorizonURLs : mainnetHorizonURLs
-      const observable = netWorker.subscribeToAccountEffects(horizonURLs, account.accountID)
-      const subscription = observable.subscribe(effect => effect && handler(account, effect))
-      return subscription
-    })
+    const unsubscribers: Array<() => void> = []
 
-    return () => subscriptions.forEach(subscription => subscription.unsubscribe())
+    const setupSubscriptions = async () => {
+      for (const account of accounts) {
+        const horizonURLs = account.testnet ? testnetHorizonURLs : mainnetHorizonURLs
+        const unsub = await netWorker.subscribeToAccountEffects(
+          horizonURLs,
+          account.accountID,
+          proxy(effect => effect && handler(account, effect))
+        )
+        unsubscribers.push(unsub)
+      }
+    }
+
+    setupSubscriptions()
+
+    return () => unsubscribers.forEach(unsub => unsub())
   }, [accounts, handler, mainnetHorizonURLs, netWorker, testnetHorizonURLs])
 }
 
@@ -251,7 +274,7 @@ export function useLiveOrderbook(selling: Asset, buying: Asset, testnet: boolean
   const horizonURLs = useHorizonURLs(testnet)
   const netWorker = useNetWorker()
 
-  const { get, set, observe } = React.useMemo(() => {
+  const { get, set, subscribe } = React.useMemo(() => {
     const selector = [horizonURLs, selling, buying] as const
     return {
       get() {
@@ -265,14 +288,14 @@ export function useLiveOrderbook(selling: Asset, buying: Asset, testnet: boolean
       set(updated: FixedOrderbookRecord) {
         orderbookCache.set(selector, updated)
       },
-      observe() {
-        return netWorker.subscribeToOrderbook(horizonURLs, stringifyAsset(selling), stringifyAsset(buying))
+      subscribe(cb: (data: FixedOrderbookRecord) => void) {
+        return netWorker.subscribeToOrderbook(horizonURLs, stringifyAsset(selling), stringifyAsset(buying), proxy(cb))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stringifyAsset(buying), horizonURLs, netWorker, stringifyAsset(selling)])
 
-  return useDataSubscription(applyOrderbookUpdate, get, set, observe)
+  return useDataSubscription(applyOrderbookUpdate, get, set, subscribe)
 }
 
 const txsMatch = (a: Horizon.HorizonApi.TransactionResponse, b: Horizon.HorizonApi.TransactionResponse): boolean => {
@@ -297,7 +320,7 @@ export function useLiveRecentTransactions(accountID: string, testnet: boolean): 
   const horizonURLs = useHorizonURLs(testnet)
   const netWorker = useNetWorker()
 
-  const { get, set, observe } = React.useMemo(() => {
+  const { get, set, subscribe } = React.useMemo(() => {
     const limit = 15
     const selector = [horizonURLs, accountID] as const
 
@@ -312,12 +335,16 @@ export function useLiveRecentTransactions(accountID: string, testnet: boolean): 
               order: "desc"
             })
 
-            const page = await withDataFetchTimeout(fetchPromise, accountID)
-            const transactions = page._embedded.records
-            return {
-              // not an accurate science right now…
-              olderTransactionsAvailable: transactions.length === limit,
-              transactions
+            try {
+              const page = await withDataFetchTimeout(fetchPromise, accountID)
+              const transactions = page._embedded.records
+              return {
+                // not an accurate science right now…
+                olderTransactionsAvailable: transactions.length === limit,
+                transactions
+              }
+            } catch {
+              return { olderTransactionsAvailable: false, transactions: [] }
             }
           })
         )
@@ -325,13 +352,13 @@ export function useLiveRecentTransactions(accountID: string, testnet: boolean): 
       set(updated: TransactionHistory) {
         accountTransactionsCache.set(selector, updated)
       },
-      observe() {
-        return netWorker.subscribeToAccountTransactions(horizonURLs, accountID)
+      subscribe(cb: (data: Horizon.HorizonApi.TransactionResponse) => void) {
+        return netWorker.subscribeToAccountTransactions(horizonURLs, accountID, proxy(cb))
       }
     }
   }, [accountID, horizonURLs, netWorker])
 
-  return useDataSubscription(applyAccountTransactionsUpdate, get, set, observe)
+  return useDataSubscription(applyAccountTransactionsUpdate, get, set, subscribe)
 }
 
 export function useOlderTransactions(accountID: string, testnet: boolean) {

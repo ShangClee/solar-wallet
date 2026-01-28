@@ -1,4 +1,4 @@
-import "isomorphic-fetch"
+// import "isomorphic-fetch"
 import { Buffer } from "buffer"
 import { EventSource } from "../Generic/lib/event-source-shim"
 

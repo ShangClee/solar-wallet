@@ -1,4 +1,5 @@
 import "eventsource"
+import { proxy } from "comlink"
 import DebugLogger from "debug"
 import throttle from "lodash.throttle"
 import { filter, flatMap, map, merge, multicast, Observable } from "observable-fns"
@@ -146,7 +147,7 @@ function cachify<T, Args extends any[]>(
 export async function checkHorizonOrFailover(primaryHorizonURL: string, secondaryHorizonURL: string) {
   const debug = debugHorizonSelection
   // Account ID of friendbot (account exists on pubnet, too)
-  const testAccountID = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR"
+  const testAccountID = "GDHCCX4YQXQXCMA6LCNSLGAKNKFSOFY6NAL6GU7TTYVCHOG2EYFGGYT4"
 
   // console.log(`[Worker] Checking horizon health: ${primaryHorizonURL}`)
 
@@ -377,11 +378,20 @@ function subscribeToAccountEffectsUncached(horizonURLs: string[], accountID: str
   )
 }
 
-export const subscribeToAccountEffects = cachify(
-  effectsSubscriptionCache,
-  subscribeToAccountEffectsUncached,
-  createAccountCacheKey
-)
+export function subscribeToAccountEffects(
+  horizonURLs: string[],
+  accountID: string,
+  onUpdate: (data: Horizon.ServerApi.EffectRecord) => void
+) {
+  const observable = cachify(
+    effectsSubscriptionCache,
+    subscribeToAccountEffectsUncached,
+    createAccountCacheKey
+  )(horizonURLs, accountID)
+
+  const subscription = observable.subscribe(onUpdate)
+  return proxy(() => subscription.unsubscribe())
+}
 
 function subscribeToAccountUncached(horizonURLs: string[], accountID: string) {
   const debug = DebugLogger(`net-worker:subscriptions:account:${accountID}`)
@@ -460,7 +470,19 @@ function subscribeToAccountUncached(horizonURLs: string[], accountID: string) {
   )
 }
 
-export const subscribeToAccount = cachify(accountSubscriptionCache, subscribeToAccountUncached, createAccountCacheKey)
+export function subscribeToAccount(
+  horizonURLs: string[],
+  accountID: string,
+  onUpdate: (data: Horizon.AccountResponse | null) => void
+) {
+  const observable = cachify(
+    accountSubscriptionCache,
+    subscribeToAccountUncached,
+    createAccountCacheKey
+  )(horizonURLs, accountID)
+  const subscription = observable.subscribe(onUpdate)
+  return proxy(() => subscription.unsubscribe())
+}
 
 function subscribeToAccountTransactionsUncached(horizonURLs: string[], accountID: string) {
   const debug = DebugLogger(`net-worker:subscriptions:account-transactions:${accountID}`)
@@ -527,11 +549,19 @@ function subscribeToAccountTransactionsUncached(horizonURLs: string[], accountID
   )
 }
 
-export const subscribeToAccountTransactions = cachify(
-  transactionsSubscriptionCache,
-  subscribeToAccountTransactionsUncached,
-  createAccountCacheKey
-)
+export function subscribeToAccountTransactions(
+  horizonURLs: string[],
+  accountID: string,
+  onUpdate: (data: Horizon.HorizonApi.TransactionResponse) => void
+) {
+  const observable = cachify(
+    transactionsSubscriptionCache,
+    subscribeToAccountTransactionsUncached,
+    createAccountCacheKey
+  )(horizonURLs, accountID)
+  const subscription = observable.subscribe(onUpdate)
+  return proxy(() => subscription.unsubscribe())
+}
 
 function subscribeToOpenOrdersUncached(horizonURLs: string[], accountID: string) {
   const debug = DebugLogger(`net-worker:subscriptions:account-orders:${accountID}`)
@@ -609,11 +639,19 @@ function subscribeToOpenOrdersUncached(horizonURLs: string[], accountID: string)
   )
 }
 
-export const subscribeToOpenOrders = cachify(
-  ordersSubscriptionCache,
-  subscribeToOpenOrdersUncached,
-  createAccountCacheKey
-)
+export function subscribeToOpenOrders(
+  horizonURLs: string[],
+  accountID: string,
+  onUpdate: (data: Horizon.ServerApi.OfferRecord[]) => void
+) {
+  const observable = cachify(
+    ordersSubscriptionCache,
+    subscribeToOpenOrdersUncached,
+    createAccountCacheKey
+  )(horizonURLs, accountID)
+  const subscription = observable.subscribe(onUpdate)
+  return proxy(() => subscription.unsubscribe())
+}
 
 function createOrderbookQuery(selling: Asset, buying: Asset) {
   const query: any = { limit: 100 }
@@ -711,11 +749,20 @@ function subscribeToOrderbookUncached(horizonURLs: string[], sellingAsset: strin
   )
 }
 
-export const subscribeToOrderbook = cachify(
-  orderbookSubscriptionCache,
-  subscribeToOrderbookUncached,
-  createOrderbookCacheKey
-)
+export function subscribeToOrderbook(
+  horizonURLs: string[],
+  sellingAsset: string,
+  buyingAsset: string,
+  onUpdate: (data: Horizon.ServerApi.OrderbookRecord) => void
+) {
+  const observable = cachify(orderbookSubscriptionCache, subscribeToOrderbookUncached, createOrderbookCacheKey)(
+    horizonURLs,
+    sellingAsset,
+    buyingAsset
+  )
+  const subscription = observable.subscribe(onUpdate)
+  return proxy(() => subscription.unsubscribe())
+}
 
 export interface PaginationOptions {
   cursor?: string
