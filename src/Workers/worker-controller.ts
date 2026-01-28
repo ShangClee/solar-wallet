@@ -33,11 +33,25 @@ async function spawnWorkers() {
   }
 }
 
-const workersPromise = spawnWorkers().catch(err => {
-  // tslint:disable-next-line no-console
-  console.error("[worker-controller] Worker failed:", err)
-  throw err
-})
+const workersPromise = spawnWorkers()
+  .then(workers => {
+    // Dispatch success event
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("worker:ready"))
+    }
+    return workers
+  })
+  .catch(err => {
+    // tslint:disable-next-line no-console
+    console.error("[worker-controller] Worker failed:", err)
+
+    // Dispatch error event for UI
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("worker:error", { detail: err }))
+    }
+
+    throw err
+  })
 
 export const workers = withTimeout(
   workersPromise,

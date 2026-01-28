@@ -34,9 +34,19 @@ const AccountPageWrapper = () => {
   )
 }
 
+import { trackError } from "../contexts/notifications"
+
 function Stage2() {
   React.useEffect(() => {
     appIsLoaded()
+
+    const handleWorkerError = (event: Event) => {
+      const error = (event as CustomEvent).detail
+      trackError(error)
+    }
+
+    window.addEventListener("worker:error", handleWorkerError)
+    return () => window.removeEventListener("worker:error", handleWorkerError)
   }, [])
   return (
     <>

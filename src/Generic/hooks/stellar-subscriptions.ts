@@ -73,8 +73,8 @@ function applyAccountDataUpdate(prev: AccountData, next: AccountData): AccountDa
   return next
 }
 
-// Timeout for individual data fetches (30 seconds)
-const DATA_FETCH_TIMEOUT_MS = 30000
+// Timeout for individual data fetches (5 seconds) - fail fast and retry
+const DATA_FETCH_TIMEOUT_MS = 5000
 
 function withDataFetchTimeout<T>(promise: Promise<T>, accountID: string): Promise<T> {
   return Promise.race([

@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client"
 import { HashRouter as Router } from "react-router-dom"
 import { ThemeProvider } from "@mui/material/styles"
 import ViewLoading from "~Generic/components/ViewLoading"
+import { WorkerErrorDialog } from "~Generic/components/WorkerErrorDialog"
+import { useWorkerStatus } from "~Generic/hooks/useWorkerStatus"
 import { appIsLoaded } from "~SplashScreen/splash-screen"
 import { ContextProviders } from "./context"
 import theme from "../theme"
@@ -26,11 +28,27 @@ export const Providers = (props: { children: React.ReactNode }) => (
   </Router>
 )
 
-const App = () => (
-  <Providers>
+function AppWithWorkerMonitoring() {
+  const { error, isLoading } = useWorkerStatus()
+
+  if (error) {
+    return <WorkerErrorDialog error={error} onRetry={() => window.location.reload()} />
+  }
+
+  if (isLoading) {
+    return <FallbackWithSplashHide />
+  }
+
+  return (
     <React.Suspense fallback={<FallbackWithSplashHide />}>
       <Stage2 />
     </React.Suspense>
+  )
+}
+
+const App = () => (
+  <Providers>
+    <AppWithWorkerMonitoring />
   </Providers>
 )
 

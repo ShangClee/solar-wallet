@@ -17,7 +17,9 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    emptyOutDir: true
+    emptyOutDir: true,
+    // Increase chunk size warning limit for workers
+    chunkSizeWarningLimit: 1000
   },
   server: {
     port: 3000
@@ -29,5 +31,19 @@ export default defineConfig({
     global: "globalThis",
     // Polyfill process.browser for legacy code
     "process.browser": true
+  },
+  worker: {
+    format: "es",
+    rollupOptions: {
+      output: {
+        // Ensure workers are properly bundled
+        entryFileNames: "assets/[name].js",
+        chunkFileNames: "assets/[name].js"
+      }
+    }
+  },
+  optimizeDeps: {
+    exclude: ["threads"],
+    include: ["stellar-sdk", "debug", "observable-fns", "isomorphic-fetch", "is-observable"]
   }
 })
